@@ -51,7 +51,7 @@ function Header(){
                             <IconBookmark size={22} />
                         </Button>
                     </Link>
-                    <Link to="/dashboard">
+                    <Link to="/upload">
                         <Button
                             variant="subtle"
                             size="md"
@@ -61,7 +61,7 @@ function Header(){
                             <IconPlus size={22} />
                         </Button>
                     </Link>
-                    <Link to="/dashboard">
+                    <Link to="/settings">
                         <Button
                             variant="subtle"
                             size="md"
