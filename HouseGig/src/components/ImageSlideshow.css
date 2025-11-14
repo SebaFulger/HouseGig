@@ -1,0 +1,98 @@
+.slideshow-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slideshow-modal {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.slideshow-close {
+  position: fixed; /* anchor to the site viewport */
+  top: 12px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 2.4rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1002; /* above footer/backdrop content */
+}
+.slideshow-image-wrap {
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.13);
+  margin-bottom: 1.2rem;
+  cursor: zoom-in;
+}
+.slideshow-image-wrap.zoomed { cursor: zoom-out; }
+.slideshow-image {
+  /* 1.5x larger than before while fitting viewport */
+  max-width: 90vw;
+  max-height: calc(90vh - 80px);
+  display: block;
+  will-change: transform;
+  transition: transform 60ms ease-out, transform-origin 60ms ease-out;
+}
+.slideshow-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  font-size: 1.1rem;
+}
+.slideshow-controls button {
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  padding: 0.3rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.slideshow-controls button:hover {
+  background: #d1e7dd;
+}
+
+/* Bottom-anchored caption footer */
+.slideshow-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  color: #fff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 1001;
+}
+.slideshow-caption {
+  font-size: 1rem;
+  letter-spacing: 0.2px;
+}
+
+.slideshow-nav {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  padding: 4px 10px;
+  line-height: 1;
+  cursor: pointer;
+}
+.slideshow-nav:hover { color: #e6e6e6; }

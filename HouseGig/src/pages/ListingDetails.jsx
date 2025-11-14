@@ -1,4 +1,7 @@
-import './Explore.css';
+import './ListingDetails.css';
+import React from 'react';
+import ImageSlideshow from '../components/ImageSlideshow';
+import ScrollFooter from '../components/ScrollFooter';
 import { useParams } from 'react-router-dom';
 import listings from '../dummyListings';
 
@@ -15,15 +18,57 @@ function ListingDetails() {
     );
   }
 
+  // For demo: use main_image_url as first, and fill up to 9 with same image (simulate multiple images)
+  const images = [listing.main_image_url];
+  while (images.length < 9) images.push(listing.main_image_url);
+
+  const [slideshowOpen, setSlideshowOpen] = React.useState(false);
+  const [slideshowIndex, setSlideshowIndex] = React.useState(0);
+
+  const openSlideshow = idx => {
+    setSlideshowIndex(idx);
+    setSlideshowOpen(true);
+  };
+
   return (
-    <main className="explore-main">
-      <h2 className="explore-title">{listing.title}</h2>
-      <img src={listing.main_image_url} alt={listing.title} style={{ width: '100%', maxWidth: 600, borderRadius: 16, marginBottom: 24 }} />
-      <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>World:</b> {listing.world}</div>
-      <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Price:</b> {listing.price}</div>
-      <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Owner:</b> {listing.owner.username}</div>
-      <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Description:</b> {listing.description || 'No description.'}</div>
-    </main>
+    <>
+      <main className="listing-details-main">
+        <div className="listing-images-section">
+          <img
+            src={images[0]}
+            alt={listing.title}
+            className="listing-main-image"
+            tabIndex={0}
+            onClick={() => openSlideshow(0)}
+          />
+          <div className="listing-gallery-grid">
+            {images.slice(1, 10).map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`Gallery ${idx + 1}`}
+                className="listing-gallery-thumb"
+                tabIndex={0}
+                onClick={() => openSlideshow(idx + 1)}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="listing-title">{listing.title}</div>
+        <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>World:</b> {listing.world}</div>
+        <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Price:</b> {listing.price}</div>
+        <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Owner:</b> {listing.owner.username}</div>
+        <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Description:</b> {listing.description || 'No description.'}</div>
+        {slideshowOpen && (
+          <ImageSlideshow
+            images={images}
+            initialIndex={slideshowIndex}
+            onClose={() => setSlideshowOpen(false)}
+          />
+        )}
+      </main>
+      <ScrollFooter />
+    </>
   );
 }
 
