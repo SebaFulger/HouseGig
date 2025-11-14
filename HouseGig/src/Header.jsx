@@ -1,8 +1,9 @@
 import './Header.css';
 import {Group, Button, TextInput, Flex, Box} from '@mantine/core';
-import { IconSearch, IconHome, IconUser, IconBookmark, IconSettings } from '@tabler/icons-react';
+import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus } from '@tabler/icons-react';
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect } from "react";
+import logo from '../assets/logo.png';
 
 function Header(){
     const headerRef = useRef(null);
@@ -25,19 +26,12 @@ function Header(){
     return(
         <header className="header" ref={headerRef}>
             <Flex justify="space-between" align="center" style={{ width: "100%" }}>
-                <Group gap="xs">
-                    <Link to="/">
-                        <Button variant="subtle" size="md" className="header-btn" aria-label="Home">
-                            <IconHome size={22} />
-                        </Button>
-                    </Link>
-                    <Link to="/">
-                        <Button variant="subtle" size="md" className="header-btn" aria-label="Explore">
-                            Explore
-                        </Button>
+                <Group gap="md">
+                    <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src={logo} alt="HouseGig" style={{ height: '50px', width: 'auto' }} />
                     </Link>
                 </Group>
-                <Box style={{ flex: 1, maxWidth: 400, margin: "0 1rem" }}>
+                <Box style={{ flex: 1, marginLeft: '1.5rem', marginRight: '1.5rem' }}>
                     <TextInput
                         placeholder="Search listings..."
                         leftSection={<IconSearch size={18} />}
@@ -46,6 +40,14 @@ function Header(){
                         className="header-search"
                     />
                 </Box>
+                <Button
+                    variant="subtle"
+                    size="md"
+                    className="header-btn"
+                    aria-label="Add listing"
+                >
+                    <IconPlus size={22} />
+                </Button>
                 <Group gap="xs">
                     <Link to="/collections">
                         <Button
@@ -75,16 +77,6 @@ function Header(){
                             aria-label="Profile"
                         >
                             <IconUser size={22} />
-                        </Button>
-                    </Link>
-                    <Link to="/auth">
-                        <Button
-                            variant="subtle"
-                            size="md"
-                            className="header-btn"
-                            aria-label="Login/Register"
-                        >
-                            Login
                         </Button>
                     </Link>
                 </Group>

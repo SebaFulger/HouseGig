@@ -12,6 +12,7 @@ header.header {
   align-items: center;
   box-sizing: border-box;
   box-shadow: 0 4px 16px 0 rgba(0,0,0,0.13), 0 2px 8px 0 rgba(0,0,0,0.10);
+  transition: transform 0.3s ease-out;
 }
 
 .header .mantine-Button-root {
@@ -26,6 +27,24 @@ header.header {
 
 .header .mantine-Button-section {
   margin: 0;
+}
+
+.header-btn svg {
+  color: #000 !important;
+}
+
+.header-search svg {
+  color: #000 !important;
+}
+
+.header .mantine-Button-root:hover {
+  background-color: transparent !important;
+  border-color: #000 !important;
+  outline: 2px solid #000 !important;
+}
+
+.header .mantine-Button-root:hover svg {
+  color: #000 !important;
 }
 
 /* Add padding to body to prevent content from being hidden under the header */

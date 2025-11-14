@@ -1,22 +1,26 @@
 .explore-main {
   padding: 0 1rem 6rem 1rem;
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 .explore-title {
-  margin-top: 4.5rem;
+  margin-top: 4.2rem;
   margin-bottom: 3.5rem;
   font-size: 2.1rem;
   font-weight: 700;
   line-height: 1.2;
-  /* Remove text-align: center for left alignment */
+  text-align: center;
+}
+
+.grid-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .listing-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(260px, 1fr));
-  gap: 2.5rem;
+  gap: 3.5rem;
   justify-items: center;
 }
 

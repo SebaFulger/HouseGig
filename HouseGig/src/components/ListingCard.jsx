@@ -31,7 +31,7 @@ function ListingCard({ listing }) {
           </div>
           <button className={`like-btn${liked ? ' liked' : ''}`} onClick={handleLike} aria-label="Like">
             <span className="like-count">{likes}</span>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill={liked ? '#e25555' : 'none'} stroke={liked ? '#e25555' : '#222'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '0.5rem'}}><path d="M20.8 4.6c-1.5-1.3-3.7-1.1-5 .4l-.8.9-.8-.9c-1.3-1.5-3.5-1.7-5-.4-1.7 1.5-1.8 4.1-.2 5.7l8 8.3 8-8.3c1.6-1.6 1.5-4.2-.2-5.7z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={liked ? '#f59f00' : 'none'} stroke={liked ? '#f59f00' : '#222'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '0.5rem'}}><polygon points="12 2 15.09 10.26 24 10.26 17.55 16.5 19.64 24.76 12 19.5 4.36 24.76 6.45 16.5 0 10.26 8.91 10.26 12 2"/></svg>
           </button>
         </div>
       </div>
