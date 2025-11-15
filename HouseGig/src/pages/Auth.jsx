@@ -120,7 +120,7 @@ function Auth() {
               mb="md"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              minLength={6}
+              // minLength={6}
             />
 
             {error && (
