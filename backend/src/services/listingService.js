@@ -42,12 +42,10 @@ export const getListingService = async (listingId) => {
     }
   }
   
-  // Fetch likes count
-  const { count: likesCount } = await supabase
-    .from('likes')
-    .select('*', { count: 'exact', head: true })
-    .eq('listing_id', listingId);
-  data.likes = likesCount || 0;
+  // Vote counts are already in the data (upvotes, downvotes columns)
+  // Ensure they're set even if null
+  data.upvotes = data.upvotes || 0;
+  data.downvotes = data.downvotes || 0;
   
   // Fetch comments count
   const { count: commentsCount } = await supabase
@@ -76,6 +74,7 @@ export const getAllListingsService = async (filters = {}) => {
     .select(`
       id,
       title,
+      description,
       world,
       region,
       property_type,
@@ -84,6 +83,8 @@ export const getAllListingsService = async (filters = {}) => {
       rarity,
       magic_level,
       owner_id,
+      upvotes,
+      downvotes,
       created_at
     `)
     .range(offset, offset + limit - 1);
@@ -149,12 +150,9 @@ export const getAllListingsService = async (filters = {}) => {
         console.log('Failed to fetch listing owner:', e);
       }
       
-      // Fetch likes count
-      const { count: likesCount } = await supabase
-        .from('likes')
-        .select('*', { count: 'exact', head: true })
-        .eq('listing_id', listing.id);
-      listing.likes = likesCount || 0;
+      // Ensure vote counts are set
+      listing.upvotes = listing.upvotes || 0;
+      listing.downvotes = listing.downvotes || 0;
       
       // Fetch comments count
       const { count: commentsCount } = await supabase
@@ -256,12 +254,9 @@ export const getUserListingsService = async (userId, limit = 20, offset = 0) => 
         console.log('Failed to fetch listing owner:', e);
       }
       
-      // Fetch likes count
-      const { count: likesCount } = await supabase
-        .from('likes')
-        .select('*', { count: 'exact', head: true })
-        .eq('listing_id', listing.id);
-      listing.likes = likesCount || 0;
+      // Ensure vote counts are set
+      listing.upvotes = listing.upvotes || 0;
+      listing.downvotes = listing.downvotes || 0;
       
       // Fetch comments count
       const { count: commentsCount } = await supabase

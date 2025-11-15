@@ -7,7 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import listingRoutes from './routes/listingRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import collectionRoutes from './routes/collectionRoutes.js';
-import likeRoutes from './routes/likeRoutes.js';
+import voteRoutes from './routes/voteRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 
 dotenv.config();
@@ -39,7 +39,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/collections', collectionRoutes);
-app.use('/api/likes', likeRoutes);
+app.use('/api/votes', voteRoutes);
 app.use('/api/comments', commentRoutes);
 
 // Health check
