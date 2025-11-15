@@ -18,26 +18,25 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check if user is logged in on mount
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      api.setToken(token);
-      // Try to fetch user data
-      api.getMe()
-        .then(userData => {
+    const initAuth = async () => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        api.setToken(token);
+        try {
+          // Try to fetch user data
+          const userData = await api.getMe();
           setUser(userData);
           setIsAuthenticated(true);
-        })
-        .catch(() => {
+        } catch {
           // Token invalid, clear it
           localStorage.removeItem('authToken');
           api.setToken(null);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
+        }
+      }
       setLoading(false);
-    }
+    };
+    
+    initAuth();
   }, []);
 
   const login = async (email, password) => {
@@ -60,20 +59,6 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  // Test login function for quick testing
-  const loginAsTestUser = () => {
-    const testUser = {
-      id: 'test-user-1',
-      username: 'TestUser',
-      email: 'test@example.com',
-      avatar_url: 'https://randomuser.me/api/portraits/men/32.jpg',
-      bio: 'This is a test user for development'
-    };
-    setUser(testUser);
-    setIsAuthenticated(true);
-    localStorage.setItem('authToken', 'test-token-123');
-  };
-
   const requireAuth = (onUnauthenticated) => {
     if (!isAuthenticated) {
       if (onUnauthenticated) {
@@ -91,7 +76,6 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    loginAsTestUser,
     requireAuth,
   };
 

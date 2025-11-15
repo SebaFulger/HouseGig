@@ -149,7 +149,7 @@ function Upload() {
 
             <TextInput
               label="World"
-              placeholder="e.g. Skyblock, Survival, Creative"
+              placeholder="e.g. Earth, Venus, Krypton"
               value={formData.world}
               onChange={(e) => setFormData({ ...formData, world: e.target.value })}
               required
@@ -166,7 +166,7 @@ function Upload() {
 
             <TextInput
               label="Region"
-              placeholder="e.g. Downtown, Near spawn"
+              placeholder="e.g. Spain, Eisengard, Narnia"
               value={formData.region}
               onChange={(e) => setFormData({ ...formData, region: e.target.value })}
             />

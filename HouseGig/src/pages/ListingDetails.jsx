@@ -5,7 +5,6 @@ import GuestPrompt from '../components/GuestPrompt';
 import Footer from '../Footer';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import listings from '../dummyListings';
 import { Container, Loader } from '@mantine/core';
 import { api } from '../services/api';
 import { notifications } from '@mantine/notifications';
@@ -17,6 +16,7 @@ function ListingDetails() {
   const [listing, setListing] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [comments, setComments] = React.useState([]);
+  const [similarListings, setSimilarListings] = React.useState([]);
   const [slideshowOpen, setSlideshowOpen] = React.useState(false);
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
   const [commentText, setCommentText] = React.useState('');
@@ -37,6 +37,13 @@ function ListingDetails() {
         // Fetch comments
         const commentsData = await api.getComments(id);
         setComments(commentsData);
+        
+        // Fetch similar listings (from same world, excluding current)
+        const allListings = await api.getListings({ limit: 20 });
+        const similar = allListings
+          .filter(l => l.id !== parseInt(id))
+          .slice(0, 4);
+        setSimilarListings(similar);
         
         // Check if liked
         if (isAuthenticated) {
@@ -272,7 +279,6 @@ function ListingDetails() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={saved ? '#1971c2' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
-                <span className="action-count">{saved ? 9 : 8}</span>
               </button>
               <button className="action-btn-with-count" onClick={handleShare}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -282,7 +288,6 @@ function ListingDetails() {
                   <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                   <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                 </svg>
-                <span className="action-count">24</span>
               </button>
             </div>
           </div>
@@ -348,15 +353,6 @@ function ListingDetails() {
                         </span>
                       </div>
                       <div className="comment-text">{comment.content}</div>
-                      <div className="comment-actions">
-                        <button className="comment-action-btn">
-                          <svg width="14" height="14" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
-                          </svg>
-                          0
-                        </button>
-                        <button className="comment-action-btn">Reply</button>
-                      </div>
                     </div>
                   </div>
                 ))
@@ -364,43 +360,45 @@ function ListingDetails() {
             </div>
           </div>
 
-          <div className="similar-listings">
-            <h2 className="similar-listings-header">More Listings</h2>
-            <div className="similar-listings-grid">
-              {listings.slice(0, 4).filter(l => l.id !== listing.id).map(similarListing => (
-                <a key={similarListing.id} href={`/listing/${similarListing.id}`} className="similar-listing-card">
-                  <img src={similarListing.main_image_url} alt={similarListing.title} className="similar-listing-image" />
-                  <div className="similar-listing-info">
-                    <div className="similar-listing-title">{similarListing.title}</div>
-                    <div className="similar-listing-meta">
-                      <span className="similar-listing-price">{similarListing.price}</span>
-                      <span className="similar-listing-owner">{similarListing.owner.username}</span>
+          {similarListings.length > 0 && (
+            <div className="similar-listings">
+              <h2 className="similar-listings-header">More Listings</h2>
+              <div className="similar-listings-grid">
+                {similarListings.map(similarListing => (
+                  <Link key={similarListing.id} to={`/listing/${similarListing.id}`} className="similar-listing-card">
+                    <img src={similarListing.main_image_url} alt={similarListing.title} className="similar-listing-image" />
+                    <div className="similar-listing-info">
+                      <div className="similar-listing-title">{similarListing.title}</div>
+                      <div className="similar-listing-meta">
+                        <span className="similar-listing-price">{similarListing.price}</span>
+                        <span className="similar-listing-owner">{similarListing.owner?.username || 'Unknown'}</span>
+                      </div>
+                      <div className="similar-listing-stats">
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
+                          <svg width="16" height="16" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
+                          </svg>
+                          {similarListing.likes || 0}
+                        </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
+                          <svg width="18" height="16" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="9" r="3.5"/><path d="M22 9c0 4-4.5 8-10 8S2 13 2 9 6.5 1 12 1s10 4 10 8z"/>
+                          </svg>
+                          {similarListing.views || 0}
+                        </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                          </svg>
+                          {similarListing.comment_count || 0}
+                        </span>
+                      </div>
                     </div>
-                    <div className="similar-listing-stats">
-                      <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
-                        <svg width="16" height="16" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
-                        </svg>
-                        {similarListing.likes}
-                      </span>
-                      <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
-                        <svg width="18" height="16" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="2">
-                          <circle cx="12" cy="9" r="3.5"/><path d="M22 9c0 4-4.5 8-10 8S2 13 2 9 6.5 1 12 1s10 4 10 8z"/>
-                        </svg>
-                        1.2K
-                      </span>
-                      <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        8
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              ))}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <Footer />

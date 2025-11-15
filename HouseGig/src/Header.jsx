@@ -1,6 +1,6 @@
 import './Header.css';
 import {Group, Button, TextInput, Flex, Box, Burger, Menu, ActionIcon, Badge} from '@mantine/core';
-import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus, IconHome, IconLogin, IconLogout, IconUserCheck } from '@tabler/icons-react';
+import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus, IconHome, IconLogin, IconLogout } from '@tabler/icons-react';
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
@@ -12,7 +12,7 @@ function Header(){
     const lastScrollY = useRef(window.scrollY);
     const [opened, { toggle, close }] = useDisclosure(false);
     const isMobile = useMediaQuery('(max-width: 960px)');
-    const { isAuthenticated, user, logout, loginAsTestUser } = useAuth();
+    const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -20,11 +20,6 @@ function Header(){
         logout();
         close();
         navigate('/');
-    };
-
-    const handleTestLogin = () => {
-        loginAsTestUser();
-        close();
     };
 
     const handleSearch = (e) => {
@@ -133,14 +128,6 @@ function Header(){
                             ) : (
                                 <>
                                     <Menu.Item 
-                                        leftSection={<IconUserCheck size={18} />}
-                                        onClick={handleTestLogin}
-                                        style={{ color: 'rgba(31, 96, 3, 0.8)' }}
-                                    >
-                                        Test Login (Dev)
-                                    </Menu.Item>
-                                    <Menu.Divider />
-                                    <Menu.Item 
                                         leftSection={<IconLogin size={18} />}
                                         component={Link} 
                                         to="/auth"
@@ -218,27 +205,16 @@ function Header(){
                                 </Menu>
                             </>
                         ) : (
-                            <Group gap="xs">
+                            <Link to="/auth">
                                 <Button
-                                    variant="light"
-                                    size="sm"
-                                    onClick={handleTestLogin}
-                                    leftSection={<IconUserCheck size={18} />}
-                                    style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)', color: 'white' }}
+                                    variant="subtle"
+                                    size="md"
+                                    className="header-btn"
+                                    aria-label="Login"
                                 >
-                                    Test Login
+                                    <IconLogin size={22} />
                                 </Button>
-                                <Link to="/auth">
-                                    <Button
-                                        variant="subtle"
-                                        size="md"
-                                        className="header-btn"
-                                        aria-label="Login"
-                                    >
-                                        <IconLogin size={22} />
-                                    </Button>
-                                </Link>
-                            </Group>
+                            </Link>
                         )}
                     </Group>
                 )}

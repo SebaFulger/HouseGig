@@ -1,10 +1,9 @@
 import './Explore.css';
 import Footer from '../Footer';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { TextInput, PasswordInput, Button, Paper, Title, Text, Anchor } from '@mantine/core';
-import listings from '../dummyListings';
 
 function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,11 +15,7 @@ function Auth() {
   const { login, register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Select a random background image from listings
-  const backgroundImage = useMemo(() => {
-    const randomListing = listings[Math.floor(Math.random() * listings.length)];
-    return randomListing.main_image_url;
-  }, []);
+  const backgroundImage = 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1920';
 
   // Redirect if already logged in
   if (isAuthenticated) {
