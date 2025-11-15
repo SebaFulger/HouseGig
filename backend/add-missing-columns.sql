@@ -1,3 +1,7 @@
+-- Ensure collections.is_public exists
+ALTER TABLE IF EXISTS public.collections
+	ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;
+
 -- Fix missing columns in listings table
 -- Run this in Supabase SQL Editor
 

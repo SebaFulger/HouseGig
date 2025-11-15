@@ -12,7 +12,8 @@ export const createCollection = async (req, res, next) => {
 export const getCollection = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const collection = await collectionService.getCollectionService(id);
+    const viewerId = req.user?.id;
+    const collection = await collectionService.getCollectionService(id, viewerId);
     res.json(collection);
   } catch (error) {
     next(error);

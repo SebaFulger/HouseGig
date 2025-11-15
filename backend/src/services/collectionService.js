@@ -1,13 +1,20 @@
 import { supabase } from '../config/supabaseClient.js';
 
 export const createCollectionService = async (collectionData, userId) => {
+  // Build insert payload without forcing is_public to avoid failures if the column doesn't exist yet
+  const payload = {
+    ...collectionData,
+    owner_id: userId,
+    created_at: new Date()
+  };
+
+  if (Object.prototype.hasOwnProperty.call(collectionData || {}, 'is_public')) {
+    payload.is_public = !!collectionData.is_public;
+  }
+
   const { data, error } = await supabase
     .from('collections')
-    .insert([{
-      ...collectionData,
-      owner_id: userId,
-      created_at: new Date()
-    }])
+    .insert([payload])
     .select()
     .single();
 
@@ -15,7 +22,7 @@ export const createCollectionService = async (collectionData, userId) => {
   return data;
 };
 
-export const getCollectionService = async (collectionId) => {
+export const getCollectionService = async (collectionId, viewerId = null) => {
   // Fetch base collection
   const { data: collection, error: collErr } = await supabase
     .from('collections')
@@ -24,6 +31,12 @@ export const getCollectionService = async (collectionId) => {
     .single();
 
   if (collErr || !collection) throw { statusCode: 404, message: 'Collection not found' };
+
+  // Enforce access: public collections are visible to all; private only to owner
+  const isOwner = viewerId && collection.owner_id === viewerId;
+  if (!collection.is_public && !isOwner) {
+    throw { statusCode: 404, message: 'Collection not found' }; // hide existence
+  }
 
   // Fetch owner profile
   const { data: owner } = await supabase
