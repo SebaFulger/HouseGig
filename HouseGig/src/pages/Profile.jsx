@@ -1,9 +1,9 @@
 import './Explore.css';
 import Footer from '../Footer';
 import { useAuth } from '../contexts/AuthContext';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Paper, Text, Title, Avatar, Button, Tabs, Loader } from '@mantine/core';
-import { IconSettings } from '@tabler/icons-react';
+import { IconSettings, IconMessage } from '@tabler/icons-react';
 import ListingCard from '../components/ListingCard';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
@@ -13,6 +13,7 @@ import { notifications } from '@mantine/notifications';
 function Profile() {
   const { user, isAuthenticated } = useAuth();
   const { username } = useParams();
+  const navigate = useNavigate();
   const isOwnProfile = !username || (isAuthenticated && user?.username === username);
 
   const [profileUser, setProfileUser] = useState(user);
@@ -83,9 +84,24 @@ function Profile() {
               <Text size="sm"><strong>{userListings.length}</strong> Listings</Text>
             </div>
           </div>
-          {isOwnProfile && (
+          {isOwnProfile ? (
             <Button leftSection={<IconSettings size={18} />} component={Link} to="/settings" style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}>
               Edit Profile
+            </Button>
+          ) : (
+            <Button 
+              leftSection={<IconMessage size={18} />} 
+              onClick={async () => {
+                try {
+                  const conversation = await api.getOrCreateConversation(profileUser.id);
+                  navigate(`/messages?userId=${profileUser.id}`);
+                } catch (error) {
+                  console.error('Failed to start conversation:', error);
+                }
+              }}
+              style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}
+            >
+              Send Message
             </Button>
           )}
         </div>

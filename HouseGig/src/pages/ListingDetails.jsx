@@ -27,7 +27,11 @@ function ListingDetails() {
   const [collectionsModalOpen, setCollectionsModalOpen] = React.useState(false);
   const [collections, setCollections] = React.useState([]);
   const [selectedCollections, setSelectedCollections] = React.useState(new Set());
+  const [replyingTo, setReplyingTo] = React.useState(null);
+  const [replyText, setReplyText] = React.useState('');
+  const [replies, setReplies] = React.useState({});
   const textareaRef = React.useRef(null);
+  const replyTextareaRef = React.useRef(null);
 
   // Fetch listing data
   React.useEffect(() => {
@@ -40,6 +44,19 @@ function ListingDetails() {
         // Fetch comments
         const commentsData = await api.getComments(id);
         setComments(commentsData);
+        
+        // Fetch replies for each comment
+        const repliesMap = {};
+        for (const comment of commentsData) {
+          try {
+            const commentReplies = await api.getCommentReplies(comment.id);
+            repliesMap[comment.id] = commentReplies || [];
+          } catch (err) {
+            console.error(`Failed to fetch replies for comment ${comment.id}:`, err);
+            repliesMap[comment.id] = [];
+          }
+        }
+        setReplies(repliesMap);
         
         // Fetch similar listings (from same world, excluding current)
         const allListings = await api.getListings({ limit: 20 });
@@ -184,6 +201,35 @@ function ListingDetails() {
         notifications.show({
           title: 'Error',
           message: 'Failed to post comment',
+          color: 'red',
+        });
+      }
+    }
+  };
+
+  const handleReplySubmit = async (commentId) => {
+    if (!requireAuth(() => {
+      setGuestAction('reply to this comment');
+      setGuestPromptOpen(true);
+    })) return;
+    
+    if (replyText.trim()) {
+      try {
+        const newReply = await api.createReply(commentId, replyText);
+        setReplies(prev => ({
+          ...prev,
+          [commentId]: [...(prev[commentId] || []), newReply]
+        }));
+        setReplyText('');
+        setReplyingTo(null);
+        notifications.show({
+          message: 'Reply posted successfully',
+          color: 'green',
+        });
+      } catch (error) {
+        notifications.show({
+          title: 'Error',
+          message: 'Failed to post reply',
           color: 'red',
         });
       }
@@ -404,13 +450,87 @@ function ListingDetails() {
                               setGuestAction('reply to this comment');
                               setGuestPromptOpen(true);
                             })) return;
-                            // TODO: Add reply input UI
-                            console.log('Reply to comment:', comment.id);
+                            setReplyingTo(replyingTo === comment.id ? null : comment.id);
+                            setReplyText('');
                           }}
                         >
                           Reply
                         </button>
                       </div>
+                      
+                      {/* Reply input */}
+                      {replyingTo === comment.id && (
+                        <div className="comment-input-wrapper" style={{ marginTop: '0.75rem' }}>
+                          <div className="comment-input-box">
+                            <textarea 
+                              ref={replyTextareaRef}
+                              className="comment-input" 
+                              placeholder={`Reply to ${comment.user?.username || 'comment'}...`}
+                              rows="1"
+                              value={replyText}
+                              onChange={(e) => {
+                                setReplyText(e.target.value);
+                                e.target.style.height = 'auto';
+                                e.target.style.height = e.target.scrollHeight + 'px';
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  handleReplySubmit(comment.id);
+                                }
+                              }}
+                              autoFocus
+                            ></textarea>
+                            <button 
+                              className="comment-send-btn"
+                              onClick={() => handleReplySubmit(comment.id)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Display replies */}
+                      {replies[comment.id] && replies[comment.id].length > 0 && (
+                        <div style={{ marginTop: '1rem', marginLeft: '2.5rem', borderLeft: '2px solid #e0e0e0', paddingLeft: '1rem' }}>
+                          {replies[comment.id].map((reply) => (
+                            <div key={reply.id} className="comment" style={{ marginBottom: '0.75rem' }}>
+                              {reply.user?.avatar_url ? (
+                                <img 
+                                  src={reply.user.avatar_url} 
+                                  alt={reply.user.username} 
+                                  className="comment-avatar" 
+                                  style={{ width: '32px', height: '32px' }}
+                                />
+                              ) : (
+                                <div className="comment-avatar-placeholder" style={{ width: '32px', height: '32px', minWidth: '32px' }}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                  </svg>
+                                </div>
+                              )}
+                              <div className="comment-content">
+                                <div className="comment-header">
+                                  <span className="comment-author">{reply.user?.username || 'Anonymous'}</span>
+                                  <span className="comment-meta">
+                                    {new Date(reply.created_at).toLocaleDateString('en-US', { 
+                                      month: 'short', 
+                                      day: 'numeric',
+                                      year: new Date(reply.created_at).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                                    })}
+                                  </span>
+                                </div>
+                                <div className="comment-text">{reply.content}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))

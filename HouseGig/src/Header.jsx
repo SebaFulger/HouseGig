@@ -1,6 +1,6 @@
 import './Header.css';
 import {Group, Button, TextInput, Flex, Box, Burger, Menu, ActionIcon, Badge} from '@mantine/core';
-import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus, IconHome, IconLogin, IconLogout } from '@tabler/icons-react';
+import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus, IconHome, IconLogin, IconLogout, IconMessage } from '@tabler/icons-react';
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
@@ -93,6 +93,14 @@ function Header(){
                                         Collections
                                     </Menu.Item>
                                     <Menu.Item 
+                                        leftSection={<IconMessage size={18} />}
+                                        component={Link} 
+                                        to="/messages"
+                                        onClick={close}
+                                    >
+                                        Messages
+                                    </Menu.Item>
+                                    <Menu.Item 
                                         leftSection={<IconPlus size={18} />}
                                         component={Link} 
                                         to="/upload"
@@ -151,6 +159,16 @@ function Header(){
                                         aria-label="Collections"
                                     >
                                         <IconBookmark size={22} />
+                                    </Button>
+                                </Link>
+                                <Link to="/messages">
+                                    <Button
+                                        variant="subtle"
+                                        size="md"
+                                        className="header-btn"
+                                        aria-label="Messages"
+                                    >
+                                        <IconMessage size={22} />
                                     </Button>
                                 </Link>
                                 <Link to="/upload">

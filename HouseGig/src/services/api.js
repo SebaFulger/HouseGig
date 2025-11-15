@@ -318,6 +318,35 @@ class ApiClient {
       throw error;
     }
   }
+
+  // Messages
+  async getConversations() {
+    return this.request('/messages');
+  }
+
+  async getOrCreateConversation(otherUserId) {
+    return this.request('/messages/conversation', {
+      method: 'POST',
+      body: JSON.stringify({ otherUserId }),
+    });
+  }
+
+  async getConversation(conversationId) {
+    return this.request(`/messages/conversation/${conversationId}`);
+  }
+
+  async sendMessage(conversationId, content) {
+    return this.request(`/messages/conversation/${conversationId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+  }
+
+  async markConversationRead(conversationId) {
+    return this.request(`/messages/conversation/${conversationId}/read`, {
+      method: 'POST',
+    });
+  }
 }
 
 export const api = new ApiClient();
