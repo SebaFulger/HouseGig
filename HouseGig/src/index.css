@@ -1,3 +1,5 @@
+@import '@mantine/notifications/styles.css';
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -15,11 +17,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: rgba(31, 96, 3, 1);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: rgba(31, 96, 3, 0.8);
 }
 
 body {
@@ -45,7 +47,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: rgba(31, 96, 3, 1);
 }
 button:focus,
 button:focus-visible {
@@ -58,9 +60,186 @@ button:focus-visible {
     background-color: #ffffff;
   }
   a:hover {
-    color: #747bff;
+    color: rgba(31, 96, 3, 0.8);
   }
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+body.dark-mode .header {
+  background-color: #2a2a2a;
+  border-bottom-color: #404040;
+}
+
+body.dark-mode .header .mantine-TextInput-input {
+  background-color: #3a3a3a !important;
+  border-color: #505050 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .header .mantine-TextInput-input::placeholder {
+  color: #c0c0c0 !important;
+}
+
+body.dark-mode .header-btn svg,
+body.dark-mode .header-search svg {
+  color: #ffffff !important;
+}
+
+body.dark-mode .mantine-Paper-root {
+  background-color: #3a3a3a;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+body.dark-mode .mantine-TextInput-input,
+body.dark-mode .mantine-Textarea-input,
+body.dark-mode .mantine-PasswordInput-input,
+body.dark-mode .mantine-Select-input,
+body.dark-mode .mantine-NumberInput-input,
+body.dark-mode .mantine-FileInput-input {
+  background-color: #2a2a2a;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+body.dark-mode .mantine-InputWrapper-label,
+body.dark-mode .mantine-Input-label {
+  color: #ffffff;
+}
+
+body.dark-mode .listing-card {
+  background-color: #3a3a3a;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+body.dark-mode .listing-title,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+  color: #ffffff;
+}
+
+body.dark-mode .explore-main {
+  background-color: #2a2a2a;
+}
+
+body.dark-mode .listing-details-box {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+body.dark-mode .comments-section {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode .comment-box {
+  background-color: #2a2a2a;
+  border-color: #505050;
+}
+
+body.dark-mode .mantine-Text-root[c="dimmed"],
+body.dark-mode [class*="dimmed"] {
+  color: #c0c0c0 !important;
+}
+
+body.dark-mode .mantine-Menu-dropdown {
+  background-color: #3a3a3a;
+  border-color: #505050;
+}
+
+body.dark-mode .mantine-Menu-item {
+  color: #ffffff;
+}
+
+body.dark-mode .mantine-Menu-item:hover {
+  background-color: #505050;
+}
+
+body.dark-mode .mantine-Tabs-tab {
+  color: #c0c0c0;
+}
+
+body.dark-mode .mantine-Tabs-tab[data-active="true"] {
+  color: #ffffff;
+}
+
+body.dark-mode p, body.dark-mode span, body.dark-mode div {
+  color: inherit;
+}
+
+body.dark-mode .listing-card .listing-title,
+body.dark-mode .listing-card h3 {
+  color: #ffffff !important;
+}
+
+body.dark-mode .listing-header {
+  background-color: transparent;
+}
+
+body.dark-mode .listing-title {
+  color: #ffffff !important;
+  background-color: transparent !important;
+}
+
+body.dark-mode .listing-info-columns,
+body.dark-mode .listing-info-item {
+  color: #ffffff;
+}
+
+body.dark-mode .comment-form,
+body.dark-mode .comment-input {
+  background-color: #3a3a3a;
+  border-color: #505050;
+}
+
+body.dark-mode .comment-author,
+body.dark-mode .comment-text,
+body.dark-mode .comment-content {
+  color: #ffffff;
+}
+
+body.dark-mode .comment {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode .similar-listings-section,
+body.dark-mode .more-listings-section {
+  background-color: #2a2a2a;
+}
+
+body.dark-mode .listing-actions button,
+body.dark-mode .action-button {
+  color: #ffffff;
+}
+
+body.dark-mode .listing-actions svg,
+body.dark-mode .action-button svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+body.dark-mode .listing-actions span,
+body.dark-mode .action-button span,
+body.dark-mode .action-count {
+  color: #ffffff !important;
+}
+
+body.dark-mode .mantine-Avatar-root {
+  border-color: #505050;
+}
+
+body.dark-mode .listing-views,
+body.dark-mode .listing-views span {
+  color: #c0c0c0;
+}
+
+body.dark-mode .listing-grid-responsive .listing-card {
+  background-color: #3a3a3a;
 }

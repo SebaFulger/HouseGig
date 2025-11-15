@@ -28,10 +28,11 @@
   justify-content: space-between;
 }
 
-.listing-title {
+.listing-card .listing-title {
   font-size: 1.18rem;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 5px 0;
   font-weight: 600;
+  color: #222 !important;
 }
 
 .listing-meta {
@@ -39,7 +40,7 @@
   justify-content: space-between;
   font-size: 1rem;
   color: #888;
-  margin-bottom: 0.7rem;
+  margin-bottom: 5px;
 }
 
 .listing-price {
