@@ -1,0 +1,141 @@
+.category-carousel-container {
+  margin-bottom: 0.1rem;
+  width: 100%;
+}
+
+.category-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-align: left;
+  padding-left: 0;
+}
+
+.category-title-main {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-top: 520px;
+  margin-bottom: 3.5rem;
+  line-height: 1.2;
+}
+
+.category-carousel-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.category-carousel-track {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.category-carousel-track::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.category-carousel-item {
+  flex: 0 0 auto;
+  width: 280px;
+}
+
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-nav-left {
+  left: -28px;
+}
+
+.carousel-nav-right {
+  right: -28px;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .carousel-nav-btn {
+  background: rgba(30, 30, 30, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+[data-theme="dark"] .carousel-nav-btn:hover {
+  background: rgba(40, 40, 40, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .category-carousel-item {
+    width: 240px;
+  }
+
+  .carousel-nav-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .carousel-nav-left {
+    left: -22px;
+  }
+
+  .carousel-nav-right {
+    right: -22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-carousel-item {
+    width: 200px;
+  }
+
+  .carousel-nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel-nav-left {
+    left: -18px;
+  }
+
+  .carousel-nav-right {
+    right: -18px;
+  }
+
+  .category-title {
+    font-size: 1.5rem;
+  }
+
+  .category-title-main {
+    font-size: 2rem;
+    margin-top: 420px;
+    margin-bottom: 2.5rem;
+  }
+}

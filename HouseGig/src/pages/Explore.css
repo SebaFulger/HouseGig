@@ -1,5 +1,5 @@
 .explore-main {
-  padding: 0 1rem 6rem 1rem;
+  padding: 0 3rem 6rem 3rem;
   margin-top: -20px;
   max-width: 100%;
   box-sizing: border-box;
@@ -12,6 +12,12 @@
   font-weight: 700;
   line-height: 1.2;
   text-align: left;
+}
+
+.categories-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .grid-container {
@@ -103,6 +109,25 @@
 .listing-grid:hover > :nth-child(3),
 .listing-grid:hover > :nth-child(4) {
   animation-play-state: paused;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .explore-main {
+    padding: 0 1.5rem 6rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .explore-main {
+    padding: 0 1rem 6rem 1rem;
+  }
+  
+  .explore-title {
+    font-size: 2rem;
+    margin-top: 3rem;
+    margin-bottom: 2.5rem;
+  }
 }
 
 /* Ensure single column on narrow viewports */

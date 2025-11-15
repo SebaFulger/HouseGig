@@ -17,7 +17,7 @@ function Profile() {
 
   const [profileUser, setProfileUser] = useState(user);
   const [userListings, setUserListings] = useState([]);
-  const [likedListings, setLikedListings] = useState([]);
+  const [upvotedListings, setUpvotedListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,9 +38,9 @@ function Profile() {
           const listings = await api.getMyListings();
           setUserListings(listings);
           
-          // Fetch liked listings
-          const liked = await api.getMyLikedListings();
-          setLikedListings(liked);
+          // Fetch upvoted listings
+          const upvoted = await api.getMyUpvotedListings();
+          setUpvotedListings(upvoted);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -95,7 +95,7 @@ function Profile() {
         <Tabs.List>
           <Tabs.Tab value="listings">Listings</Tabs.Tab>
           <Tabs.Tab value="collections">Collections</Tabs.Tab>
-          {isOwnProfile && <Tabs.Tab value="liked">Liked</Tabs.Tab>}
+          {isOwnProfile && <Tabs.Tab value="upvoted">Upvoted</Tabs.Tab>}
         </Tabs.List>
 
         <Tabs.Panel value="listings" pt="xl">
@@ -121,14 +121,14 @@ function Profile() {
         </Tabs.Panel>
 
         {isOwnProfile && (
-          <Tabs.Panel value="liked" pt="xl">
-            {likedListings.length === 0 ? (
+          <Tabs.Panel value="upvoted" pt="xl">
+            {upvotedListings.length === 0 ? (
               <Paper shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
-                <Text c="dimmed">No liked listings yet</Text>
+                <Text c="dimmed">No upvoted designs yet</Text>
               </Paper>
             ) : (
               <div className="listing-grid-responsive">
-                {likedListings.map(listing => (
+                {upvotedListings.map(listing => (
                   <Link key={listing.id} to={`/listing/${listing.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <ListingCard listing={listing} />
                   </Link>

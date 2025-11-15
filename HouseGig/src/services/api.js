@@ -106,19 +106,34 @@ class ApiClient {
     return this.request('/listings/my-listings');
   }
 
-  // Likes
-  async likeListing(listingId) {
-    return this.request('/likes', {
+  // Votes
+  async upvoteListing(listingId) {
+    return this.request('/votes/upvote', {
       method: 'POST',
       body: JSON.stringify({ listingId }),
     });
   }
 
-  async unlikeListing(listingId) {
-    return this.request('/likes', {
+  async downvoteListing(listingId) {
+    return this.request('/votes/downvote', {
+      method: 'POST',
+      body: JSON.stringify({ listingId }),
+    });
+  }
+
+  async removeVote(listingId) {
+    return this.request('/votes', {
       method: 'DELETE',
       body: JSON.stringify({ listingId }),
     });
+  }
+
+  async getVoteStatus(listingId) {
+    return this.request(`/votes/${listingId}/status`);
+  }
+
+  async getVoteStats(listingId) {
+    return this.request(`/votes/${listingId}/stats`);
   }
 
   async uploadImage(file) {
@@ -164,16 +179,8 @@ class ApiClient {
   }
 
 
-  async getLikesCount(listingId) {
-    return this.request(`/likes/${listingId}/count`);
-  }
-
-  async checkIfLiked(listingId) {
-    return this.request(`/likes/${listingId}/check`);
-  }
-
-  async getMyLikedListings() {
-    return this.request('/likes/my-likes');
+  async getMyUpvotedListings() {
+    return this.request('/votes/my-upvotes');
   }
 
   // Collections

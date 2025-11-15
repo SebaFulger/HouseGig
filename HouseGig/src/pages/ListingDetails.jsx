@@ -3,15 +3,16 @@ import React from 'react';
 import ImageSlideshow from '../components/ImageSlideshow';
 import GuestPrompt from '../components/GuestPrompt';
 import Footer from '../Footer';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Container, Loader, Modal, Checkbox, Button } from '@mantine/core';
+import { Container, Loader, Modal, Checkbox, Button, Menu, ActionIcon, Progress } from '@mantine/core';
 import { api } from '../services/api';
 import { notifications } from '@mantine/notifications';
+import { IconDots, IconEdit, IconTrash, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
 
 function ListingDetails() {
   const { id } = useParams();
-  const { isAuthenticated, requireAuth } = useAuth();
+  const { isAuthenticated, requireAuth, user } = useAuth();
 
   const [listing, setListing] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -20,7 +21,9 @@ function ListingDetails() {
   const [slideshowOpen, setSlideshowOpen] = React.useState(false);
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
   const [commentText, setCommentText] = React.useState('');
-  const [liked, setLiked] = React.useState(false);
+  const [voteStatus, setVoteStatus] = React.useState(null); // 'upvote', 'downvote', or null
+  const [upvotes, setUpvotes] = React.useState(0);
+  const [downvotes, setDownvotes] = React.useState(0);
   const [saved, setSaved] = React.useState(false);
   const [guestPromptOpen, setGuestPromptOpen] = React.useState(false);
   const [guestAction, setGuestAction] = React.useState('');
@@ -28,6 +31,9 @@ function ListingDetails() {
   const [collections, setCollections] = React.useState([]);
   const [selectedCollections, setSelectedCollections] = React.useState(new Set());
   const textareaRef = React.useRef(null);
+  const navigate = useNavigate();
+  const [editingCommentId, setEditingCommentId] = React.useState(null);
+  const [editCommentText, setEditCommentText] = React.useState('');
 
   // Fetch listing data
   React.useEffect(() => {
@@ -48,10 +54,17 @@ function ListingDetails() {
           .slice(0, 4);
         setSimilarListings(similar);
         
-        // Check if liked
+        // Get vote stats and status
+        setUpvotes(data.upvotes || 0);
+        setDownvotes(data.downvotes || 0);
+        
         if (isAuthenticated) {
-          const likedStatus = await api.checkIfLiked(id);
-          setLiked(likedStatus.isLiked);
+          try {
+            const voteData = await api.getVoteStatus(id);
+            setVoteStatus(voteData.voteType); // 'upvote', 'downvote', or null
+          } catch (err) {
+            console.log('Error fetching vote status:', err);
+          }
         }
       } catch (error) {
         console.error('Error fetching listing:', error);
@@ -99,7 +112,7 @@ function ListingDetails() {
     if (galleryCount === 1) return 'listing-gallery-grid-single';
     if (galleryCount === 2) return 'listing-gallery-grid-double';
     if (galleryCount === 3) return 'listing-gallery-grid-triple';
-    return 'listing-gallery-grid'; // 4+ images
+    return 'listing-gallery-grid-quad'; // 4 images in 2x2 grid
   };
 
   const openSlideshow = idx => {
@@ -107,32 +120,79 @@ function ListingDetails() {
     setSlideshowOpen(true);
   };
 
-  const handleLike = async () => {
+  const handleUpvote = async () => {
     if (!requireAuth(() => {
-      setGuestAction('like this listing');
+      setGuestAction('vote on this design');
       setGuestPromptOpen(true);
     })) return;
     
     try {
-      if (liked) {
-        await api.unlikeListing(id);
-        setLiked(false);
+      if (voteStatus === 'upvote') {
+        // Remove upvote
+        await api.removeVote(id);
+        setVoteStatus(null);
+        setUpvotes(prev => prev - 1);
         notifications.show({
-          message: 'Removed from likes',
+          message: 'Vote removed',
           color: 'gray',
         });
       } else {
-        await api.likeListing(id);
-        setLiked(true);
+        // Add or change to upvote
+        await api.upvoteListing(id);
+        if (voteStatus === 'downvote') {
+          setDownvotes(prev => prev - 1);
+        }
+        setVoteStatus('upvote');
+        setUpvotes(prev => prev + (voteStatus === 'downvote' ? 1 : 1));
         notifications.show({
-          message: 'Added to likes',
+          message: 'Upvoted!',
           color: 'green',
         });
       }
     } catch (error) {
+      console.error('Failed to update vote:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to update like status',
+        message: 'Failed to update vote',
+        color: 'red',
+      });
+    }
+  };
+
+  const handleDownvote = async () => {
+    if (!requireAuth(() => {
+      setGuestAction('vote on this design');
+      setGuestPromptOpen(true);
+    })) return;
+    
+    try {
+      if (voteStatus === 'downvote') {
+        // Remove downvote
+        await api.removeVote(id);
+        setVoteStatus(null);
+        setDownvotes(prev => prev - 1);
+        notifications.show({
+          message: 'Vote removed',
+          color: 'gray',
+        });
+      } else {
+        // Add or change to downvote
+        await api.downvoteListing(id);
+        if (voteStatus === 'upvote') {
+          setUpvotes(prev => prev - 1);
+        }
+        setVoteStatus('downvote');
+        setDownvotes(prev => prev + (voteStatus === 'upvote' ? 1 : 1));
+        notifications.show({
+          message: 'Downvoted',
+          color: 'orange',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update vote:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to update vote',
         color: 'red',
       });
     }
@@ -152,6 +212,7 @@ function ListingDetails() {
       setSaved(initial.size > 0);
       setCollectionsModalOpen(true);
     } catch (e) {
+      console.error('Failed to load collections:', e);
       notifications.show({ title: 'Error', message: 'Failed to load collections', color: 'red' });
     }
   };
@@ -160,6 +221,97 @@ function ListingDetails() {
     // Share doesn't require auth
     navigator.clipboard.writeText(window.location.href);
     alert('Link copied to clipboard!');
+  };
+
+  const handleDeleteListing = async () => {
+    if (!window.confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await api.deleteListing(id);
+      notifications.show({
+        title: 'Success',
+        message: 'Listing deleted successfully',
+        color: 'green',
+      });
+      navigate('/profile');
+    } catch (error) {
+      console.error('Failed to delete listing:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to delete listing',
+        color: 'red',
+      });
+    }
+  };
+
+  const handleEditListing = () => {
+    navigate(`/listing/${id}/edit`);
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) {
+      return;
+    }
+
+    try {
+      await api.deleteComment(commentId);
+      notifications.show({
+        message: 'Comment deleted successfully',
+        color: 'green',
+      });
+      // Refresh comments
+      const updatedComments = await api.getComments(id);
+      setComments(updatedComments);
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to delete comment',
+        color: 'red',
+      });
+    }
+  };
+
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment.id);
+    setEditCommentText(comment.content);
+  };
+
+  const handleSaveEditComment = async (commentId) => {
+    if (!editCommentText.trim()) {
+      notifications.show({
+        message: 'Comment cannot be empty',
+        color: 'red',
+      });
+      return;
+    }
+
+    try {
+      await api.updateComment(commentId, editCommentText);
+      notifications.show({
+        message: 'Comment updated successfully',
+        color: 'green',
+      });
+      setEditingCommentId(null);
+      setEditCommentText('');
+      // Refresh comments
+      const updatedComments = await api.getComments(id);
+      setComments(updatedComments);
+    } catch (error) {
+      console.error('Failed to update comment:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to update comment',
+        color: 'red',
+      });
+    }
+  };
+
+  const handleCancelEditComment = () => {
+    setEditingCommentId(null);
+    setEditCommentText('');
   };
 
   const handleCommentSubmit = async () => {
@@ -181,6 +333,7 @@ function ListingDetails() {
           color: 'green',
         });
       } catch (error) {
+        console.error('Failed to post comment:', error);
         notifications.show({
           title: 'Error',
           message: 'Failed to post comment',
@@ -204,32 +357,73 @@ function ListingDetails() {
             />
             {images.length > 1 && (
               <div className={getGalleryGridClass()}>
-                {images.slice(1, 5).map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt={`Gallery ${idx + 1}`}
-                    className="listing-gallery-thumb"
-                    tabIndex={0}
-                    onClick={() => openSlideshow(idx + 1)}
-                  />
-                ))}
-                {images.length > 5 && (
-                  <div 
-                    className="listing-gallery-thumb gallery-more"
-                    tabIndex={0}
-                    onClick={() => openSlideshow(5)}
-                  >
-                    <img
-                      src={images[5]}
-                      alt="Gallery 5"
-                      className="gallery-more-bg"
-                    />
-                    <div className="gallery-more-overlay">
-                      +{images.length - 5}
-                    </div>
-                  </div>
-                )}
+                {(() => {
+                  const galleryCount = images.length - 1;
+                  
+                  if (galleryCount === 1) {
+                    // Single image
+                    return (
+                      <img
+                        src={images[1]}
+                        alt="Gallery 1"
+                        className="listing-gallery-thumb"
+                        tabIndex={0}
+                        onClick={() => openSlideshow(1)}
+                      />
+                    );
+                  } else if (galleryCount === 2) {
+                    // Two images in 1 column 2 rows
+                    return images.slice(1, 3).map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`Gallery ${idx + 1}`}
+                        className="listing-gallery-thumb"
+                        tabIndex={0}
+                        onClick={() => openSlideshow(idx + 1)}
+                      />
+                    ));
+                  } else if (galleryCount === 3) {
+                    // Two images with +1 overlay on second
+                    return (
+                      <>
+                        <img
+                          src={images[1]}
+                          alt="Gallery 1"
+                          className="listing-gallery-thumb"
+                          tabIndex={0}
+                          onClick={() => openSlideshow(1)}
+                        />
+                        <div 
+                          className="listing-gallery-thumb gallery-more"
+                          tabIndex={0}
+                          onClick={() => openSlideshow(2)}
+                        >
+                          <img
+                            src={images[2]}
+                            alt="Gallery 2"
+                            className="gallery-more-bg"
+                          />
+                          <div className="gallery-more-overlay">
+                            +1
+                          </div>
+                        </div>
+                      </>
+                    );
+                  } else {
+                    // 4 images in 2x2 grid
+                    return images.slice(1, 5).map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`Gallery ${idx + 1}`}
+                        className="listing-gallery-thumb"
+                        tabIndex={0}
+                        onClick={() => openSlideshow(idx + 1)}
+                      />
+                    ));
+                  }
+                })()}
               </div>
             )}
           </div>
@@ -237,12 +431,31 @@ function ListingDetails() {
         
         <div className="listing-header">
           <h1 className="listing-title">{listing.title}</h1>
-          <div className="listing-views">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            <span>{listing.views || 0} views</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {isAuthenticated && user?.id === listing.owner_id && (
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <ActionIcon variant="subtle" color="gray" size="lg">
+                    <IconDots size={20} />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item 
+                    leftSection={<IconEdit size={16} />}
+                    onClick={handleEditListing}
+                  >
+                    Edit Listing
+                  </Menu.Item>
+                  <Menu.Item 
+                    leftSection={<IconTrash size={16} />}
+                    color="red"
+                    onClick={handleDeleteListing}
+                  >
+                    Delete Listing
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            )}
           </div>
         </div>
 
@@ -262,17 +475,44 @@ function ListingDetails() {
             <p>{listing.description || 'No description available.'}</p>
           </div>
 
+          <div className="listing-vote-section">
+            <div className="vote-info-box">
+              <div className="vote-percentage-large">
+                {upvotes + downvotes > 0 ? Math.round((upvotes / (upvotes + downvotes)) * 100) : 0}%
+              </div>
+              <Progress 
+                value={upvotes + downvotes > 0 ? (upvotes / (upvotes + downvotes)) * 100 : 0} 
+                size="md" 
+                color={upvotes + downvotes > 0 && (upvotes / (upvotes + downvotes)) * 100 >= 70 ? 'green' : upvotes + downvotes > 0 && (upvotes / (upvotes + downvotes)) * 100 >= 40 ? 'yellow' : 'red'}
+                style={{ width: '100%', marginTop: '0.5rem' }}
+              />
+              <div className="vote-counts">
+                {upvotes} upvotes · {downvotes} downvotes
+              </div>
+            </div>
+          </div>
+
           <div className="listing-actions-row">
             <Link to={`/profile/${listing.owner.username}`} className="listing-user-info">
               <img src={listing.owner.avatar_url} alt={listing.owner.username} className="listing-user-avatar" />
               <span className="listing-user-name">{listing.owner.username}</span>
             </Link>
             <div className="listing-actions">
-              <button className="action-btn-with-count" onClick={handleLike} style={{ color: liked ? '#e25555' : 'inherit' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={liked ? '#e25555' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-                <span className="action-count">{listing.likes + (liked ? 1 : 0)}</span>
+              <button 
+                className="action-btn-with-count" 
+                onClick={handleUpvote} 
+                style={{ color: voteStatus === 'upvote' ? '#51cf66' : 'inherit' }}
+              >
+                <IconArrowUp size={28} stroke={1.5} />
+                <span className="action-count">{upvotes}</span>
+              </button>
+              <button 
+                className="action-btn-with-count" 
+                onClick={handleDownvote} 
+                style={{ color: voteStatus === 'downvote' ? '#ff6b6b' : 'inherit' }}
+              >
+                <IconArrowDown size={28} stroke={1.5} />
+                <span className="action-count">{downvotes}</span>
               </button>
               <button className="action-btn-with-count" onClick={() => {
                 const commentsSection = document.querySelector('.comments-section');
@@ -363,16 +603,68 @@ function ListingDetails() {
                     )}
                     <div className="comment-content">
                       <div className="comment-header">
-                        <span className="comment-author">{comment.user?.username || 'Anonymous'}</span>
-                        <span className="comment-meta">
-                          {new Date(comment.created_at).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric',
-                            year: new Date(comment.created_at).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
-                          })}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span className="comment-author">{comment.user?.username || 'Anonymous'}</span>
+                          <span className="comment-meta">
+                            {new Date(comment.created_at).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric',
+                              year: new Date(comment.created_at).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                            })}
+                          </span>
+                        </div>
+                        {isAuthenticated && user?.id === comment.user_id && (
+                          <Menu shadow="md" width={180}>
+                            <Menu.Target>
+                              <ActionIcon variant="subtle" color="gray" size="sm">
+                                <IconDots size={16} />
+                              </ActionIcon>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                              <Menu.Item 
+                                leftSection={<IconEdit size={14} />}
+                                onClick={() => handleEditComment(comment)}
+                              >
+                                Edit Comment
+                              </Menu.Item>
+                              <Menu.Item 
+                                leftSection={<IconTrash size={14} />}
+                                color="red"
+                                onClick={() => handleDeleteComment(comment.id)}
+                              >
+                                Delete Comment
+                              </Menu.Item>
+                            </Menu.Dropdown>
+                          </Menu>
+                        )}
                       </div>
-                      <div className="comment-text">{comment.content}</div>
+                      {editingCommentId === comment.id ? (
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <textarea
+                            className="comment-input"
+                            value={editCommentText}
+                            onChange={(e) => setEditCommentText(e.target.value)}
+                            rows={3}
+                            style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem' }}
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === 'Escape') {
+                                handleCancelEditComment();
+                              }
+                            }}
+                          />
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <Button size="xs" onClick={() => handleSaveEditComment(comment.id)}>
+                              Save
+                            </Button>
+                            <Button size="xs" variant="outline" onClick={handleCancelEditComment}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="comment-text">{comment.content}</div>
+                      )}
                       <div className="comment-actions">
                         <button 
                           className="comment-action-btn"
@@ -439,12 +731,6 @@ function ListingDetails() {
                           {similarListing.likes || 0}
                         </span>
                         <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
-                          <svg width="18" height="16" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="9" r="3.5"/><path d="M22 9c0 4-4.5 8-10 8S2 13 2 9 6.5 1 12 1s10 4 10 8z"/>
-                          </svg>
-                          {similarListing.views || 0}
-                        </span>
-                        <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                           </svg>
@@ -503,6 +789,7 @@ function ListingDetails() {
                     notifications.show({ message: 'Collections updated', color: 'green' });
                     setCollectionsModalOpen(false);
                   } catch (err) {
+                    console.error('Failed to update collections:', err);
                     notifications.show({ title: 'Error', message: 'Failed to update collections', color: 'red' });
                   }
                 }}

@@ -16,6 +16,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Upload from "./pages/Upload";
+import EditListing from "./pages/EditListing";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function AnimatedRoutes() {
         <Routes location={location}>
           <Route path="/" element={<Explore />} />
           <Route path="/listing/:id" element={<ListingDetails />} />
+          <Route path="/listing/:id/edit" element={<ProtectedRoute><EditListing /></ProtectedRoute>} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/profile/:username" element={<Profile />} />

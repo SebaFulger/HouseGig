@@ -30,22 +30,45 @@
 
 .listing-card .listing-title {
   font-size: 1.18rem;
-  margin: 0 0 5px 0;
+  margin: 0 0 8px 0;
   font-weight: 600;
   color: var(--text) !important;
 }
 
-.listing-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1rem;
+.listing-description {
+  font-size: 0.9rem;
   color: var(--muted);
-  margin-bottom: 5px;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(1.4em * 2);
 }
 
-.listing-price {
+.vote-section {
+  margin: 8px 0 12px 0;
+}
+
+.vote-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.vote-percentage {
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--text);
-  font-weight: 500;
+}
+
+.vote-count {
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .listing-footer {
