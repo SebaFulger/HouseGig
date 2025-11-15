@@ -13,12 +13,8 @@ function Upload() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    price: '',
-    world: '',
     region: '',
-    property_type: '',
-    rarity: '',
-    magic_level: 1
+    property_type: ''
   });
   const [mainImage, setMainImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -27,7 +23,7 @@ function Upload() {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.title || !formData.price || !formData.world) {
+    if (!formData.title) {
       notifications.show({
         title: 'Missing Information',
         message: 'Please fill in all required fields',
@@ -58,12 +54,8 @@ function Upload() {
       const listingData = {
         title: formData.title,
         description: formData.description,
-        price: formData.price,
-        world: formData.world,
         region: formData.region || null,
         property_type: formData.property_type || null,
-        rarity: formData.rarity || null,
-        magic_level: formData.magic_level || null,
         main_image_url: mainImageUrl,
         gallery_image_urls: galleryImageUrls,
         tags: []
@@ -138,23 +130,7 @@ function Upload() {
             mb="md"
           />
 
-          <Group grow mb="md">
-            <TextInput
-              label="Price"
-              placeholder="e.g. 1000000 coins, 500 diamonds"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              required
-            />
 
-            <TextInput
-              label="World"
-              placeholder="e.g. Earth, Venus, Krypton"
-              value={formData.world}
-              onChange={(e) => setFormData({ ...formData, world: e.target.value })}
-              required
-            />
-          </Group>
 
           <Group grow mb="md">
             <TextInput
@@ -172,40 +148,7 @@ function Upload() {
             />
           </Group>
 
-          <Group grow mb="xl" align="flex-start">
-            <Select
-              label="Rarity"
-              placeholder="Select rarity"
-              value={formData.rarity}
-              onChange={(value) => setFormData({ ...formData, rarity: value })}
-              data={[
-                { value: 'Common', label: 'Common' },
-                { value: 'Uncommon', label: 'Uncommon' },
-                { value: 'Rare', label: 'Rare' },
-                { value: 'Epic', label: 'Epic' },
-                { value: 'Legendary', label: 'Legendary' }
-              ]}
-            />
 
-            <div style={{ flex: 1 }}>
-              <label style={{ fontSize: '14px', fontWeight: 500, marginBottom: '8px', display: 'block' }}>
-                Magic Level: {formData.magic_level}
-              </label>
-              <Slider
-                value={formData.magic_level}
-                onChange={(value) => setFormData({ ...formData, magic_level: value })}
-                min={1}
-                max={10}
-                step={1}
-                marks={[
-                  { value: 1, label: '1' },
-                  { value: 5, label: '5' },
-                  { value: 10, label: '10' }
-                ]}
-                color="rgba(31, 96, 3, 0.8)"
-              />
-            </div>
-          </Group>
 
           <Group justify="flex-end">
             <Button variant="outline" onClick={() => navigate(-1)} style={{ borderColor: 'rgba(31, 96, 3, 0.8)', color: 'rgba(31, 96, 3, 0.8)' }}>
