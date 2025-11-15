@@ -33,7 +33,6 @@ function Auth() {
     setLoading(true);
 
     try {
-      debugger;
       if (isLogin) {
         await login(email, password);
       } else {
