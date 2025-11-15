@@ -266,7 +266,7 @@ function ListingDetails() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
-                <span className="action-count">12</span>
+                <span className="action-count">{comments.length}</span>
               </button>
               <button className="action-btn-with-count" onClick={handleSave} style={{ color: saved ? '#1971c2' : 'inherit' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={saved ? '#1971c2' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -324,44 +324,43 @@ function ListingDetails() {
               </div>
             </div>
             <div className="comments-list">
-              <div className="comment">
-                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" className="comment-avatar" />
-                <div className="comment-content">
-                  <div className="comment-header">
-                    <span className="comment-author">JohnDoe</span>
-                    <span className="comment-meta">2 hours ago</span>
+              {comments.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#666', padding: '2rem' }}>
+                  No comments yet. Be the first to comment!
+                </p>
+              ) : (
+                comments.map((comment) => (
+                  <div key={comment.id} className="comment">
+                    <img 
+                      src={comment.user?.avatar_url || 'https://randomuser.me/api/portraits/men/1.jpg'} 
+                      alt={comment.user?.username || 'User'} 
+                      className="comment-avatar" 
+                    />
+                    <div className="comment-content">
+                      <div className="comment-header">
+                        <span className="comment-author">{comment.user?.username || 'Anonymous'}</span>
+                        <span className="comment-meta">
+                          {new Date(comment.created_at).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric',
+                            year: new Date(comment.created_at).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                          })}
+                        </span>
+                      </div>
+                      <div className="comment-text">{comment.content}</div>
+                      <div className="comment-actions">
+                        <button className="comment-action-btn">
+                          <svg width="14" height="14" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
+                          </svg>
+                          0
+                        </button>
+                        <button className="comment-action-btn">Reply</button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="comment-text">This looks amazing! Would love to visit.</div>
-                  <div className="comment-actions">
-                    <button className="comment-action-btn">
-                      <svg width="14" height="14" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
-                      </svg>
-                      5
-                    </button>
-                    <button className="comment-action-btn">Reply</button>
-                  </div>
-                </div>
-              </div>
-              <div className="comment">
-                <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="User" className="comment-avatar" />
-                <div className="comment-content">
-                  <div className="comment-header">
-                    <span className="comment-author">JaneSmith</span>
-                    <span className="comment-meta">5 hours ago</span>
-                  </div>
-                  <div className="comment-text">Incredible build! How long did this take?</div>
-                  <div className="comment-actions">
-                    <button className="comment-action-btn">
-                      <svg width="14" height="14" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
-                      </svg>
-                      12
-                    </button>
-                    <button className="comment-action-btn">Reply</button>
-                  </div>
-                </div>
-              </div>
+                ))
+              )}
             </div>
           </div>
 

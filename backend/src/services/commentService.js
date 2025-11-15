@@ -13,6 +13,18 @@ export const createCommentService = async (listingId, userId, content) => {
     .single();
 
   if (error) throw { statusCode: 400, message: error.message };
+  
+  // Fetch user profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, username, avatar_url')
+    .eq('id', userId)
+    .single();
+  
+  if (profile) {
+    data.user = profile;
+  }
+  
   return data;
 };
 
@@ -26,20 +38,32 @@ export const getListingCommentsService = async (listingId, limit = 20, offset = 
 
   if (error) throw { statusCode: 400, message: error.message };
   
-  // Fetch user info for each comment from auth.users
+  // Manually fetch user profiles for each comment
   if (data && data.length > 0) {
     const commentsWithUsers = await Promise.all(data.map(async (comment) => {
       try {
-        const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(comment.user_id);
-        if (!userError && user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('id, username, avatar_url')
+          .eq('id', comment.user_id)
+          .single();
+        
+        if (!profileError && profile) {
+          comment.user = profile;
+        } else {
           comment.user = {
-            id: user.id,
-            username: user.user_metadata?.username || user.email.split('@')[0],
-            avatar_url: user.user_metadata?.avatar_url || null
+            id: comment.user_id,
+            username: 'Anonymous',
+            avatar_url: null
           };
         }
       } catch (e) {
         console.log('Failed to fetch comment user:', e);
+        comment.user = {
+          id: comment.user_id,
+          username: 'Anonymous',
+          avatar_url: null
+        };
       }
       return comment;
     }));
