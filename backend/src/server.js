@@ -23,10 +23,12 @@ app.use(cors({
 // Import upload middleware for multipart handling
 import upload from './utils/fileUpload.js';
 import * as listingController from './controllers/listingController.js';
+import * as userController from './controllers/userController.js';
 import { authenticate } from './middleware/authMiddleware.js';
 
-// File upload route MUST come before body parsers
+// File upload routes MUST come before body parsers
 app.post('/api/listings/upload-image', authenticate, upload.single('image'), listingController.uploadImage);
+app.post('/api/users/upload-profile-picture', authenticate, upload.single('image'), userController.uploadProfilePicture);
 
 // Body parsers - applied after file upload route
 app.use(express.json({limit: '50mb', extended: true}));

@@ -27,3 +27,17 @@ export const getMe = async (req, res, next) => {
     next(error);
   }
 };
+
+export const uploadProfilePicture = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+    console.log('Received profile picture:', req.file);
+    const imageUrl = await userService.uploadProfilePictureService(req.user.id, req.file);
+    res.json({ imageUrl });
+  } catch (error) {
+    console.error('Profile picture upload error:', error);
+    next(error);
+  }
+};

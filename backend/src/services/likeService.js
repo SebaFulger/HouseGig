@@ -67,5 +67,52 @@ export const getUserLikedListings = async (userId, limit = 20, offset = 0) => {
     .range(offset, offset + limit - 1);
 
   if (error) throw { statusCode: 400, message: error.message };
-  return data?.map(like => like.listing) || [];
+  
+  const listings = data?.map(like => like.listing) || [];
+  
+  // Add owner info, likes and comments counts for each listing
+  if (listings.length > 0) {
+    const listingsWithCounts = await Promise.all(listings.map(async (listing) => {
+      // Fetch owner info from auth.users and profiles table
+      try {
+        const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(listing.owner_id);
+        if (!userError && user) {
+          // Also check profiles table for avatar_url
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('avatar_url')
+            .eq('id', listing.owner_id)
+            .single();
+          
+          listing.owner = {
+            id: user.id,
+            username: user.user_metadata?.username || user.email.split('@')[0],
+            avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || null
+          };
+        }
+      } catch (e) {
+        // If owner fetch fails, continue without owner data
+        console.log('Failed to fetch listing owner:', e);
+      }
+      
+      // Fetch likes count
+      const { count: likesCount } = await supabase
+        .from('likes')
+        .select('*', { count: 'exact', head: true })
+        .eq('listing_id', listing.id);
+      listing.likes = likesCount || 0;
+      
+      // Fetch comments count
+      const { count: commentsCount } = await supabase
+        .from('comments')
+        .select('*', { count: 'exact', head: true })
+        .eq('listing_id', listing.id);
+      listing.comments = commentsCount || 0;
+      
+      return listing;
+    }));
+    return listingsWithCounts;
+  }
+  
+  return listings;
 };

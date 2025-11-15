@@ -53,3 +53,59 @@ export const updateComment = async (req, res, next) => {
     next(error);
   }
 };
+
+export const likeComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const result = await commentService.likeCommentService(commentId, req.user.id);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unlikeComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const result = await commentService.unlikeCommentService(commentId, req.user.id);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const checkCommentLiked = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const result = await commentService.checkCommentLikedService(commentId, req.user.id);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createReply = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Content is required' });
+    }
+
+    const reply = await commentService.createReplyService(commentId, req.user.id, content);
+    res.status(201).json(reply);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCommentReplies = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const replies = await commentService.getCommentRepliesService(commentId);
+    res.json(replies);
+  } catch (error) {
+    next(error);
+  }
+};
