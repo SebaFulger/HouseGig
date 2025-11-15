@@ -4,6 +4,7 @@ import ImageSlideshow from '../components/ImageSlideshow';
 import ScrollFooter from '../components/ScrollFooter';
 import { useParams } from 'react-router-dom';
 import listings from '../dummyListings';
+import { Container } from '@mantine/core';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -33,27 +34,29 @@ function ListingDetails() {
   return (
     <>
       <main className="listing-details-main">
-        <div className="listing-images-section">
-          <img
-            src={images[0]}
-            alt={listing.title}
-            className="listing-main-image"
-            tabIndex={0}
-            onClick={() => openSlideshow(0)}
-          />
-          <div className="listing-gallery-grid">
-            {images.slice(1, 10).map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`Gallery ${idx + 1}`}
-                className="listing-gallery-thumb"
-                tabIndex={0}
-                onClick={() => openSlideshow(idx + 1)}
-              />
-            ))}
+        <Container size="xl" px="md">
+          <div className="listing-images-section">
+            <img
+              src={images[0]}
+              alt={listing.title}
+              className="listing-main-image"
+              tabIndex={0}
+              onClick={() => openSlideshow(0)}
+            />
+            <div className="listing-gallery-grid">
+              {images.slice(1, 10).map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`Gallery ${idx + 1}`}
+                  className="listing-gallery-thumb"
+                  tabIndex={0}
+                  onClick={() => openSlideshow(idx + 1)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </Container>
         <div className="listing-title">{listing.title}</div>
         <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>World:</b> {listing.world}</div>
         <div style={{ fontSize: '1.2rem', marginBottom: 12 }}><b>Price:</b> {listing.price}</div>

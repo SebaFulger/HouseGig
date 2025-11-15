@@ -5,7 +5,7 @@ const listings = [
     title: 'Sky Castle',
     world: 'Cloud Realm',
     price: '1200 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/skycastle/800/600',
     owner: {
       username: 'Aetheria',
       avatar_url: 'https://randomuser.me/api/portraits/women/44.jpg'
@@ -19,7 +19,7 @@ const listings = [
     title: 'Enchanted Treehouse',
     world: 'Mystic Woods',
     price: '800 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/treehouse/800/600',
     owner: {
       username: 'Sylva',
       avatar_url: 'https://randomuser.me/api/portraits/men/32.jpg'
@@ -33,7 +33,7 @@ const listings = [
     title: 'Crystal Lake Cabin',
     world: 'Frost Valley',
     price: '950 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/lakecabin/800/600',
     owner: {
       username: 'Glacia',
       avatar_url: 'https://randomuser.me/api/portraits/women/65.jpg'
@@ -47,7 +47,7 @@ const listings = [
     title: 'Dragon Peak Tower',
     world: 'Volcanic Isles',
     price: '1500 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/dragontower/800/600',
     owner: {
       username: 'Drakonis',
       avatar_url: 'https://randomuser.me/api/portraits/men/15.jpg'
@@ -61,7 +61,7 @@ const listings = [
     title: 'Moonlight Manor',
     world: 'Silver Vale',
     price: '1100 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1505228395891-9a51e7e86e81?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/moonmanor/800/600',
     owner: {
       username: 'Lunara',
       avatar_url: 'https://randomuser.me/api/portraits/women/30.jpg'
@@ -75,7 +75,7 @@ const listings = [
     title: 'Ancient Temple Ruins',
     world: 'Lost Kingdom',
     price: '850 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/templeruins/800/600',
     owner: {
       username: 'Archaeus',
       avatar_url: 'https://randomuser.me/api/portraits/men/42.jpg'
@@ -89,7 +89,7 @@ const listings = [
     title: 'Floating Isle Observatory',
     world: 'Celestial Heights',
     price: '1350 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1506381773649-6e0ee8d70d46?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/observatory/800/600',
     owner: {
       username: 'Stellaris',
       avatar_url: 'https://randomuser.me/api/portraits/women/58.jpg'
@@ -103,7 +103,7 @@ const listings = [
     title: 'Underwater Palace',
     world: 'Aquamarine Deep',
     price: '1600 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1508606401543-557f1cfd4c3a?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/underwater/800/600',
     owner: {
       username: 'Nerida',
       avatar_url: 'https://randomuser.me/api/portraits/women/73.jpg'
@@ -117,7 +117,7 @@ const listings = [
     title: 'Emerald Garden Estate',
     world: 'Verdant Fields',
     price: '950 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1469022563149-aa64dbd37dae?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/garden/800/600',
     owner: {
       username: 'Verdania',
       avatar_url: 'https://randomuser.me/api/portraits/women/21.jpg'
@@ -131,7 +131,7 @@ const listings = [
     title: 'Crimson Keep',
     world: 'Blood Rock',
     price: '1250 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1510315170289-48a05b41e6f9?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/crimsonkeep/800/600',
     owner: {
       username: 'Ravenna',
       avatar_url: 'https://randomuser.me/api/portraits/women/41.jpg'
@@ -145,7 +145,7 @@ const listings = [
     title: 'Golden Pagoda',
     world: 'Eastern Mystique',
     price: '1180 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1518162592292-c923ccc27c42?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/pagoda/800/600',
     owner: {
       username: 'Aurion',
       avatar_url: 'https://randomuser.me/api/portraits/men/67.jpg'
@@ -159,7 +159,7 @@ const listings = [
     title: 'Ice Palace Fortress',
     world: 'Frozen North',
     price: '1400 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/icepalace/800/600',
     owner: {
       username: 'Frostine',
       avatar_url: 'https://randomuser.me/api/portraits/women/5.jpg'
@@ -173,7 +173,7 @@ const listings = [
     title: 'Shadowveil Manor',
     world: 'Obsidian Vale',
     price: '1050 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1518495285542-4542c06a5117?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/shadowmanor/800/600',
     owner: {
       username: 'Nightshade',
       avatar_url: 'https://randomuser.me/api/portraits/men/54.jpg'
@@ -187,7 +187,7 @@ const listings = [
     title: 'Phoenix Rising Tower',
     world: 'Flame Realm',
     price: '1300 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/phoenixtower/800/600',
     owner: {
       username: 'Pyros',
       avatar_url: 'https://randomuser.me/api/portraits/men/24.jpg'
@@ -201,7 +201,7 @@ const listings = [
     title: 'Starlight Haven',
     world: 'Cosmic Haven',
     price: '1425 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1518066000714-58c45f1b773c?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/starlight/800/600',
     owner: {
       username: 'Cosmara',
       avatar_url: 'https://randomuser.me/api/portraits/women/80.jpg'
@@ -215,7 +215,7 @@ const listings = [
     title: 'Windmill Cottage',
     world: 'Pastoral Breeze',
     price: '700 Gold',
-    main_image_url: 'https://images.unsplash.com/photo-1570129477492-45a003537e1f?auto=format&fit=crop&w=600&q=80',
+    main_image_url: 'https://picsum.photos/seed/windmill/800/600',
     owner: {
       username: 'Zephyr',
       avatar_url: 'https://randomuser.me/api/portraits/men/11.jpg'

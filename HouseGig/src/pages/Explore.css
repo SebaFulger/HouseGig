@@ -1,6 +1,8 @@
 .explore-main {
   padding: 0 1rem 6rem 1rem;
   margin-top: -20px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .explore-title {
@@ -9,13 +11,32 @@
   font-size: 2.4rem;
   font-weight: 700;
   line-height: 1.2;
-    text-align: left;
+  text-align: left;
 }
 
 .grid-container {
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+.listing-grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .listing-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .listing-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 @keyframes carouselRight {

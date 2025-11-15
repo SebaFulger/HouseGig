@@ -17,16 +17,28 @@ function App() {
     <MantineProvider>
       <Router>
         <Header />
-        <Routes>
-          <Route path="/" element={<Explore />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/listing/:id" element={<ListingDetails />} />
-          <Route path="/collections" element={<Collections />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/upload" element={<Upload />} />
-        </Routes>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%'
+        }}>
+          <div style={{
+            width: '100%',
+            maxWidth: '1400px',
+            margin: '0 auto'
+          }}>
+            <Routes>
+              <Route path="/" element={<Explore />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/listing/:id" element={<ListingDetails />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/upload" element={<Upload />} />
+            </Routes>
+          </div>
+        </div>
         {/* Footer is now handled per-page, not globally */}
       </Router>
     </MantineProvider>
