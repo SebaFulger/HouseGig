@@ -14,10 +14,34 @@
 }
 
 .ai-message.user {
-  background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%);
+  background: rgba(31, 96, 3, 0.8);
+  color: #fff;
 }
 
 .ai-message.assistant {
-  background: #f8f9fa;
-  border-left: 3px solid #228be6;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
+
+/* Dark mode styles - same as Messages page */
+body.dark-mode .ai-message.user {
+  background: rgba(31, 96, 3, 0.8);
+  color: #fff;
+}
+
+body.dark-mode .ai-message.assistant {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* ScrollArea and viewport dark mode */
+body.dark-mode .mantine-ScrollArea-viewport {
+  background-color: var(--bg) !important;
+}
+
+body.dark-mode .mantine-ScrollArea-root {
+  background-color: var(--bg) !important;
+}
+

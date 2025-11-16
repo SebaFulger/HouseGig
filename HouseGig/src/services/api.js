@@ -371,6 +371,13 @@ class ApiClient {
     });
   }
 
+  async analyzeImage(imageUrl, prompt = null) {
+    return this.request('/ai/analyze-image', {
+      method: 'POST',
+      body: JSON.stringify({ imageUrl, prompt }),
+    });
+  }
+
   async checkAIHealth() {
     return this.request('/ai/health', {
       method: 'GET',

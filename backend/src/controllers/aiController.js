@@ -89,10 +89,6 @@ const enrichContext = async (context) => {
         description: listing.description,
         property_type: listing.property_type,
         region: listing.region,
-        price: listing.price,
-        world: listing.world,
-        rarity: listing.rarity,
-        magic_level: listing.magic_level,
         owner: listing.owner
       };
     }
@@ -129,12 +125,57 @@ const enrichContext = async (context) => {
 };
 
 /**
+ * Handle image analysis request
+ */
+export const analyzeImage = async (req, res, next) => {
+  try {
+    const { imageUrl, prompt } = req.body;
+
+    // Validate image URL
+    if (!imageUrl || typeof imageUrl !== 'string') {
+      return res.status(400).json({ 
+        error: 'Image URL is required' 
+      });
+    }
+
+    // Basic URL validation
+    try {
+      new URL(imageUrl);
+    } catch (e) {
+      return res.status(400).json({ 
+        error: 'Invalid image URL' 
+      });
+    }
+
+    // Get AI analysis
+    const analysis = await aiService.analyzeImage(imageUrl, prompt);
+
+    res.json({ 
+      analysis: analysis,
+      imageUrl: imageUrl,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Image Analysis Controller Error:', error);
+    
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ 
+        error: error.message 
+      });
+    }
+
+    next(error);
+  }
+};
+
+/**
  * Health check for AI service
  */
 export const healthCheck = async (req, res) => {
   try {
-    const hasApiKey = !!process.env.OPENAI_API_KEY;
-    const model = process.env.AI_MODEL || 'gpt-4o-mini';
+    const hasApiKey = !!process.env.GEMINI_API_KEY;
+    const model = process.env.AI_MODEL || 'gemini-2.0-flash-exp';
 
     res.json({
       status: 'ok',

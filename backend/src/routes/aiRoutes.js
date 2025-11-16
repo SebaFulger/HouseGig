@@ -28,6 +28,9 @@ const aiRateLimiter = rateLimit({
 // AI chat endpoint - requires authentication and rate limiting
 router.post('/chat', authenticate, aiRateLimiter, aiController.chat);
 
+// Image analysis endpoint - requires authentication and rate limiting
+router.post('/analyze-image', authenticate, aiRateLimiter, aiController.analyzeImage);
+
 // Health check endpoint - no auth required
 router.get('/health', aiController.healthCheck);
 

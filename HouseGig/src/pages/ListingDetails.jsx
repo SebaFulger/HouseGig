@@ -41,6 +41,8 @@ function ListingDetails() {
   const textareaRef = React.useRef(null);
   const replyTextareaRef = React.useRef(null);
   const [aiOpened, { open: openAI, close: closeAI }] = useDisclosure(false);
+  const [analyzingImage, setAnalyzingImage] = React.useState(false);
+  const [imageAnalysis, setImageAnalysis] = React.useState(null);
 
   // Fetch listing data
   React.useEffect(() => {
@@ -392,6 +394,31 @@ function ListingDetails() {
     }
   };
 
+  const handleAnalyzeImage = async () => {
+    if (!requireAuth(() => {
+      setGuestAction('analyze this image');
+      setGuestPromptOpen(true);
+    })) return;
+
+    try {
+      setAnalyzingImage(true);
+      const result = await api.analyzeImage(listing.main_image_url);
+      setImageAnalysis(result.analysis);
+      notifications.show({
+        message: 'Image analyzed successfully!',
+        color: 'green',
+      });
+    } catch (error) {
+      notifications.show({
+        title: 'Analysis Failed',
+        message: error.message || 'Could not analyze image',
+        color: 'red',
+      });
+    } finally {
+      setAnalyzingImage(false);
+    }
+  };
+
   return (
     <>
       <main className="listing-details-main">
@@ -482,15 +509,27 @@ function ListingDetails() {
           <h1 className="listing-title">{listing.title}</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {isAuthenticated && (
-              <Button
-                variant="light"
-                color="violet"
-                leftSection={<IconSparkles size={18} />}
-                onClick={openAI}
-                size="sm"
-              >
-                Ask AI
-              </Button>
+              <>
+                <Button
+                  variant="light"
+                  color="violet"
+                  leftSection={<IconSparkles size={18} />}
+                  onClick={openAI}
+                  size="sm"
+                >
+                  Ask AI
+                </Button>
+                <Button
+                  variant="light"
+                  color="grape"
+                  leftSection={<IconSparkles size={18} />}
+                  onClick={handleAnalyzeImage}
+                  loading={analyzingImage}
+                  size="sm"
+                >
+                  Analyze Image
+                </Button>
+              </>
             )}
             {isAuthenticated && user?.id === listing.owner_id && (
               <Menu shadow="md" width={200}>
@@ -533,6 +572,18 @@ function ListingDetails() {
             <h3>Description</h3>
             <p>{listing.description || 'No description available.'}</p>
           </div>
+
+          {imageAnalysis && (
+            <div className="listing-details-box" style={{ marginTop: '2rem', background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 100%)', border: '2px solid #e9d5ff' }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <IconSparkles size={24} style={{ color: '#9333ea' }} />
+                AI Image Analysis
+              </h3>
+              <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                {imageAnalysis}
+              </div>
+            </div>
+          )}
 
           <div className="listing-actions-row">
             <Link to={`/profile/${listing.owner.username}`} className="listing-user-info">

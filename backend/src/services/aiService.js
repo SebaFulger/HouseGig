@@ -221,3 +221,87 @@ export const sanitizeInput = (text) => {
   
   return sanitized;
 };
+
+/**
+ * Analyze an image using Gemini Vision
+ * @param {string} imageUrl - URL of the image to analyze
+ * @param {string} prompt - Optional custom prompt (defaults to design analysis)
+ * @returns {Promise<string>} - Analysis result
+ */
+export const analyzeImage = async (imageUrl, prompt = null) => {
+  try {
+    // Use Gemini Pro Vision model
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+
+    // Default design analysis prompt
+    const analysisPrompt = prompt || `Analyze this home/garden/interior design image. Provide:
+
+1. **Style & Architecture**: Identify the design style, architectural elements
+2. **Key Features**: Notable design elements, materials, colors
+3. **Strengths**: What works well in this design
+4. **Improvement Ideas**: 2-3 practical suggestions to enhance the space
+5. **Suitable For**: Who would love this space and why
+
+Keep it concise, practical, and enthusiastic!`;
+
+    // Fetch the image
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error('Failed to fetch image');
+    }
+
+    const imageBuffer = await imageResponse.arrayBuffer();
+    const base64Image = Buffer.from(imageBuffer).toString('base64');
+
+    // Determine mime type from URL or default to jpeg
+    let mimeType = 'image/jpeg';
+    if (imageUrl.includes('.png')) mimeType = 'image/png';
+    if (imageUrl.includes('.webp')) mimeType = 'image/webp';
+
+    // Generate content with image
+    const result = await model.generateContent([
+      analysisPrompt,
+      {
+        inlineData: {
+          data: base64Image,
+          mimeType: mimeType
+        }
+      }
+    ]);
+
+    const response = await result.response;
+    const analysis = response.text()?.trim();
+
+    if (!analysis) {
+      throw new Error('No analysis from AI');
+    }
+
+    return analysis;
+
+  } catch (error) {
+    console.error('Image Analysis Error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      status: error.status
+    });
+
+    // Handle specific errors
+    if (error.status === 401 || error.message?.includes('API key')) {
+      throw { statusCode: 500, message: 'AI service authentication failed.' };
+    }
+    if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('rate limit')) {
+      throw { statusCode: 429, message: 'AI rate limit reached. Please try again in a moment.' };
+    }
+    if (error.message?.includes('SAFETY')) {
+      throw { statusCode: 400, message: 'Image blocked by safety filters.' };
+    }
+    if (error.message?.includes('fetch')) {
+      throw { statusCode: 400, message: 'Could not load image. Please check the URL.' };
+    }
+
+    throw { 
+      statusCode: 500, 
+      message: error.message || 'Failed to analyze image.' 
+    };
+  }
+};
