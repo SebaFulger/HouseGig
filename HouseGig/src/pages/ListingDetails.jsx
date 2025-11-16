@@ -568,9 +568,9 @@ function ListingDetails() {
             </div>
           </div>
           
-          <div className="listing-description">
-            <h3>Description</h3>
-            <p>{listing.description || 'No description available.'}</p>
+          <div className="listing-description-section">
+            <div className="listing-info-item"><b>Description</b></div>
+            <div className="listing-description-text">{listing.description || 'No description available.'}</div>
           </div>
 
           {imageAnalysis && (
