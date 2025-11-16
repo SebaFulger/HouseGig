@@ -86,7 +86,7 @@ header.header {
 
 /* Site initials (used inside ActionIcon for mobile) */
 .site-initials {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Rockwell Nova', 'Rockwell', 'Courier New', 'Courier', monospace;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -95,8 +95,8 @@ header.header {
   border-radius: 8px;
   color: rgba(31, 96, 3, 1) !important;
   background-color: transparent;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 900;
+  font-size: 1.4rem;
 }
 
 .site-initials:hover,

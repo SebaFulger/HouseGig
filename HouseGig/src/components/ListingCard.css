@@ -26,6 +26,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 .listing-card .listing-title {
@@ -50,25 +51,19 @@
 }
 
 .vote-section {
-  margin: 8px 0 12px 0;
-}
-
-.vote-info {
+  position: absolute;
+  top: 1.2rem;
+  right: 1rem;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
 }
 
 .vote-percentage {
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
-}
-
-.vote-count {
-  font-size: 0.8rem;
-  color: var(--muted);
 }
 
 .listing-footer {

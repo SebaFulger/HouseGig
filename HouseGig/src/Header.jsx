@@ -11,7 +11,7 @@ function Header(){
     const headerRef = useRef(null);
     const lastScrollY = useRef(window.scrollY);
     const [opened, { toggle, close }] = useDisclosure(false);
-    const isMobile = useMediaQuery('(max-width: 960px)');
+    const isMobile = useMediaQuery('(max-width: 1200px)');
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
@@ -148,7 +148,7 @@ function Header(){
                         </Menu.Dropdown>
                     </Menu>
                 ) : (
-                    <Group gap={0} style={{ flex: 0.18, justifyContent: 'space-evenly' }}>
+                    <Group gap="xs" style={{ flexShrink: 0, justifyContent: 'flex-end' }}>
                         {isAuthenticated ? (
                             <>
                                 <Link to="/collections">

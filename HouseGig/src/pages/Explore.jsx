@@ -28,30 +28,25 @@ function Explore() {
   // Categorize listings - for now we'll use placeholder categories
   // Later this will be based on tags from the backend
   const categorizeListings = () => {
+    if (listings.length === 0) return [];
+    
     const categories = [
       { title: 'Featured Listings', filter: () => true, isMain: true },
       { title: 'Recently Added', filter: () => true },
-      { title: 'Skyblock Properties', filter: (l) => l.world?.toLowerCase().includes('skyblock') || l.world?.toLowerCase().includes('sky') },
-      { title: 'Creative Builds', filter: (l) => l.world?.toLowerCase().includes('creative') || l.property_type?.toLowerCase().includes('creative') },
-      { title: 'Survival Homes', filter: (l) => l.world?.toLowerCase().includes('survival') },
-      { title: 'Castles & Fortresses', filter: (l) => l.property_type?.toLowerCase().includes('castle') || l.property_type?.toLowerCase().includes('fortress') },
-      { title: 'Modern Architecture', filter: (l) => l.property_type?.toLowerCase().includes('modern') || l.title?.toLowerCase().includes('modern') },
-      { title: 'Farms & Agriculture', filter: (l) => l.property_type?.toLowerCase().includes('farm') || l.title?.toLowerCase().includes('farm') },
-      { title: 'Rare Properties', filter: (l) => l.rarity?.toLowerCase().includes('rare') || l.rarity?.toLowerCase().includes('legendary') },
-      { title: 'High Magic Level', filter: (l) => l.magic_level >= 7 },
-      { title: 'Budget Friendly', filter: (l) => {
-        const priceStr = l.price?.toLowerCase() || '';
-        return priceStr.includes('100') || priceStr.includes('200') || priceStr.includes('300');
-      }},
-      { title: 'Premium Listings', filter: (l) => {
-        const priceStr = l.price?.toLowerCase() || '';
-        return priceStr.includes('1000000') || priceStr.includes('million');
-      }},
+      { title: 'Classical', filter: (l) => l.property_type?.toLowerCase().includes('classical') || l.region?.toLowerCase().includes('classical') || l.title?.toLowerCase().includes('classical') || l.description?.toLowerCase().includes('classical') },
+      { title: 'Brutalist', filter: (l) => l.property_type?.toLowerCase().includes('brutalist') || l.region?.toLowerCase().includes('brutalist') || l.title?.toLowerCase().includes('brutalist') || l.description?.toLowerCase().includes('brutalist') },
+      { title: 'France', filter: (l) => l.region?.toLowerCase().includes('france') || l.region?.toLowerCase().includes('french') || l.title?.toLowerCase().includes('france') || l.description?.toLowerCase().includes('france') },
+      { title: 'United States', filter: (l) => l.region?.toLowerCase().includes('united states') || l.region?.toLowerCase().includes('usa') || l.region?.toLowerCase().includes('america') || l.title?.toLowerCase().includes('america') || l.description?.toLowerCase().includes('america') },
+      { title: 'Art Nouveau', filter: (l) => l.property_type?.toLowerCase().includes('art nouveau') || l.region?.toLowerCase().includes('art nouveau') || l.title?.toLowerCase().includes('art nouveau') || l.description?.toLowerCase().includes('art nouveau') },
+      { title: 'Romania', filter: (l) => l.region?.toLowerCase().includes('romania') || l.region?.toLowerCase().includes('romanian') || l.title?.toLowerCase().includes('romania') || l.description?.toLowerCase().includes('romania') },
+      { title: 'Gardens', filter: (l) => l.property_type?.toLowerCase().includes('garden') || l.title?.toLowerCase().includes('garden') || l.description?.toLowerCase().includes('garden') },
+      { title: 'From Popular Culture', filter: (l) => l.description?.toLowerCase().includes('movie') || l.description?.toLowerCase().includes('film') || l.description?.toLowerCase().includes('tv') || l.description?.toLowerCase().includes('game') || l.description?.toLowerCase().includes('book') || l.title?.toLowerCase().includes('movie') || l.title?.toLowerCase().includes('film') },
     ];
 
     return categories.map(cat => ({
       title: cat.title,
-      listings: listings.filter(cat.filter).slice(0, 20) // Show up to 20 items per category
+      listings: listings.filter(cat.filter).slice(0, 20), // Show up to 20 items per category
+      isMain: cat.isMain
     })).filter(cat => cat.listings.length > 0); // Only show categories with listings
   };
 

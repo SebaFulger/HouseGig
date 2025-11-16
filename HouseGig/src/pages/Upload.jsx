@@ -23,10 +23,10 @@ function Upload() {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.title) {
+    if (!formData.title || !mainImage) {
       notifications.show({
         title: 'Missing Information',
-        message: 'Please fill in all required fields',
+        message: 'Please fill in all required fields (title and main image)',
         color: 'red',
         icon: <IconX size={18} />
       });
@@ -90,13 +90,14 @@ function Upload() {
       <Paper shadow="md" p="xl" radius="md" withBorder>
         <form onSubmit={handleSubmit}>
           <FileInput
-            label="Main Image (Optional)"
+            label="Main Image"
             placeholder="Upload main property image"
             accept="image/*"
             value={mainImage}
             onChange={setMainImage}
             leftSection={<IconUpload size={18} />}
             mb="md"
+            required
             description="Upload a main image for your listing"
           />
           
@@ -135,13 +136,13 @@ function Upload() {
           <Group grow mb="md">
             <TextInput
               label="Property Type"
-              placeholder="e.g. House, Apartment, Villa, Castle"
+              placeholder="e.g. House, Garden"
               value={formData.property_type}
               onChange={(e) => setFormData({ ...formData, property_type: e.target.value })}
             />
 
             <TextInput
-              label="Region"
+              label="Region/Style"
               placeholder="e.g. Spain, Eisengard, Narnia"
               value={formData.region}
               onChange={(e) => setFormData({ ...formData, region: e.target.value })}

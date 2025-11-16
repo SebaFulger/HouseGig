@@ -508,11 +508,10 @@ function ListingDetails() {
         <div className="listing-details-box">
           <div className="listing-info-columns">
             <div className="listing-info-column">
-              <div className="listing-info-item"><b>World:</b> {listing.world}</div>
-              <div className="listing-info-item"><b>Price:</b> {listing.price}</div>
+              <div className="listing-info-item"><b>Property Type:</b> {listing.property_type || 'N/A'}</div>
             </div>
             <div className="listing-info-column">
-              <div className="listing-info-item"><b>Owner:</b> {listing.owner.username}</div>
+              <div className="listing-info-item"><b>Region/Style:</b> {listing.region || 'N/A'}</div>
             </div>
           </div>
           
@@ -521,29 +520,23 @@ function ListingDetails() {
             <p>{listing.description || 'No description available.'}</p>
           </div>
 
-          <div className="listing-vote-section">
-            <div className="vote-info-box">
-              <div className="vote-percentage-large">
-                {upvotes + downvotes > 0 ? Math.round((upvotes / (upvotes + downvotes)) * 100) : 0}%
-              </div>
-              <Progress 
-                value={upvotes + downvotes > 0 ? (upvotes / (upvotes + downvotes)) * 100 : 0} 
-                size="md" 
-                color={upvotes + downvotes > 0 && (upvotes / (upvotes + downvotes)) * 100 >= 70 ? 'green' : upvotes + downvotes > 0 && (upvotes / (upvotes + downvotes)) * 100 >= 40 ? 'yellow' : 'red'}
-                style={{ width: '100%', marginTop: '0.5rem' }}
-              />
-              <div className="vote-counts">
-                {upvotes} upvotes · {downvotes} downvotes
-              </div>
-            </div>
-          </div>
-
           <div className="listing-actions-row">
             <Link to={`/profile/${listing.owner.username}`} className="listing-user-info">
               <img src={listing.owner.avatar_url} alt={listing.owner.username} className="listing-user-avatar" />
               <span className="listing-user-name">{listing.owner.username}</span>
             </Link>
             <div className="listing-actions">
+              <div className="listing-vote-section-inline">
+                <Progress 
+                  value={upvotes + downvotes > 0 ? (upvotes / (upvotes + downvotes)) * 100 : 0} 
+                  size="xs" 
+                  color={upvotes + downvotes > 0 && (upvotes / (upvotes + downvotes)) * 100 >= 70 ? 'green' : upvotes + downvotes > 0 && (upvotes / (upvotes + downvotes)) * 100 >= 40 ? 'yellow' : 'red'}
+                  style={{ width: '60px' }}
+                />
+                <span className="vote-percentage-inline">
+                  {upvotes + downvotes > 0 ? Math.round((upvotes / (upvotes + downvotes)) * 100) : 0}%
+                </span>
+              </div>
               <button 
                 className="action-btn-with-count" 
                 onClick={handleUpvote} 
@@ -861,16 +854,15 @@ function ListingDetails() {
                       </div>
                       <div className="similar-listing-stats">
                         <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
-                          <svg width="16" height="16" viewBox="2 0 20 16" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M12 15C12 15 5 10.36 5 6.5C5 4.02 7.02 2 9.5 2C10.88 2 12.13 2.81 13 4.08C13.87 2.81 15.12 2 16.5 2C18.98 2 21 4.02 21 6.5C21 10.36 14 15 14 15H12Z" />
-                          </svg>
-                          {similarListing.likes || 0}
-                        </span>
-                        <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                           </svg>
                           {similarListing.comment_count || 0}
+                        </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', fontWeight: 600}}>
+                          {similarListing.upvotes + similarListing.downvotes > 0 
+                            ? Math.round((similarListing.upvotes / (similarListing.upvotes + similarListing.downvotes)) * 100) 
+                            : 0}%
                         </span>
                       </div>
                     </div>
