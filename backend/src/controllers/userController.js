@@ -41,3 +41,12 @@ export const uploadProfilePicture = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteAccount = async (req, res, next) => {
+  try {
+    const result = await userService.deleteUserAccountService(req.user.id);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};

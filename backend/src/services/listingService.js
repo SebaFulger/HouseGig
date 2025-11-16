@@ -1,5 +1,28 @@
 import { supabase } from '../config/supabaseClient.js';
 
+// Helper function to get username from profiles table first, then fallback to auth metadata
+async function getUsernameForOwner(userId) {
+  try {
+    // First check profiles table
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', userId)
+      .single();
+    
+    if (profile?.username) {
+      return profile.username;
+    }
+    
+    // Fallback to auth.users metadata
+    const { data: { user } } = await supabase.auth.admin.getUserById(userId);
+    return user?.user_metadata?.username || user?.email?.split('@')[0] || 'Unknown User';
+  } catch (e) {
+    console.error('Error fetching username:', e);
+    return 'Unknown User';
+  }
+}
+
 export const createListingService = async (listingData, userId) => {
   const { data, error } = await supabase
     .from('listings')
@@ -24,16 +47,25 @@ export const getListingService = async (listingId) => {
 
   if (error) throw { statusCode: 404, message: error.message || 'Listing not found' };
   
-  // Fetch owner info from auth.users
+  // Fetch owner info from profiles table and auth.users
   if (data.owner_id) {
     try {
+      // Get profile data first
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username, avatar_url, bio')
+        .eq('id', data.owner_id)
+        .single();
+      
+      // Get auth user data as fallback
       const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(data.owner_id);
+      
       if (!userError && user) {
         data.owner = {
           id: user.id,
-          username: user.user_metadata?.username || user.email.split('@')[0],
-          avatar_url: user.user_metadata?.avatar_url || null,
-          bio: user.user_metadata?.bio || null
+          username: profile?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'Unknown User',
+          avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || null,
+          bio: profile?.bio || user.user_metadata?.bio || null
         };
       }
     } catch (e) {
@@ -113,18 +145,20 @@ export const getAllListingsService = async (filters = {}) => {
   if (data && data.length > 0) {
     const listingsWithOwners = await Promise.all(data.map(async (listing) => {
       try {
+        // Check profiles table first
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username, avatar_url')
+          .eq('id', listing.owner_id)
+          .single();
+        
+        // Get auth user data as fallback
         const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(listing.owner_id);
+        
         if (!userError && user) {
-          // Also check profiles table for avatar_url
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('avatar_url')
-            .eq('id', listing.owner_id)
-            .single();
-          
           listing.owner = {
             id: user.id,
-            username: user.user_metadata?.username || user.email.split('@')[0],
+            username: profile?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'Unknown User',
             avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || null
           };
         }
@@ -215,20 +249,22 @@ export const getUserListingsService = async (userId, limit = 20, offset = 0) => 
   // Add owner info, likes and comments counts for each listing
   if (data && data.length > 0) {
     const listingsWithCounts = await Promise.all(data.map(async (listing) => {
-      // Fetch owner info from auth.users and profiles table
+      // Fetch owner info from profiles table first, then auth.users
       try {
+        // Check profiles table first
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username, avatar_url')
+          .eq('id', listing.owner_id)
+          .single();
+        
+        // Get auth user data as fallback
         const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(listing.owner_id);
+        
         if (!userError && user) {
-          // Also check profiles table for avatar_url
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('avatar_url')
-            .eq('id', listing.owner_id)
-            .single();
-          
           listing.owner = {
             id: user.id,
-            username: user.user_metadata?.username || user.email.split('@')[0],
+            username: profile?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'Unknown User',
             avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || null
           };
         }
@@ -294,20 +330,22 @@ export const getListingsByUsernameService = async (username, limit = 20, offset 
   // Add owner info, likes and comments counts for each listing
   if (data && data.length > 0) {
     const listingsWithCounts = await Promise.all(data.map(async (listing) => {
-      // Fetch owner info from auth.users and profiles table
+      // Fetch owner info from profiles table first, then auth.users
       try {
+        // Check profiles table first
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username, avatar_url')
+          .eq('id', listing.owner_id)
+          .single();
+        
+        // Get auth user data as fallback
         const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(listing.owner_id);
+        
         if (!userError && user) {
-          // Also check profiles table for avatar_url
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('avatar_url, username')
-            .eq('id', listing.owner_id)
-            .single();
-          
           listing.owner = {
             id: user.id,
-            username: profile?.username || user.user_metadata?.username || user.email.split('@')[0],
+            username: profile?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'Unknown User',
             avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || null
           };
         }
