@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Paper, Title, TextInput, Textarea, NumberInput, Select, Button, FileInput, Group, Slider } from '@mantine/core';
@@ -64,8 +63,8 @@ function Upload() {
       await api.createListing(listingData);
       
       notifications.show({
-        title: 'Success!',
-        message: 'Your listing has been created',
+        title: 'Success',
+        message: 'Your design has been created',
         color: 'green',
         icon: <IconCheck size={18} />
       });
@@ -74,7 +73,7 @@ function Upload() {
     } catch (err) {
       notifications.show({
         title: 'Error',
-        message: err.message || 'Failed to create listing. Please try again.',
+        message: err.message || 'Failed to create design. Please try again.',
         color: 'red',
         icon: <IconX size={18} />
       });
@@ -85,7 +84,7 @@ function Upload() {
 
   return (
     <main className="explore-main">
-      <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1.2, marginTop: '4.2rem', marginBottom: '3.5rem' }}>Create New Listing</h2>
+      <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1.2, marginTop: '4.2rem', marginBottom: '3.5rem' }}>Create New Design</h2>
       
       <Paper shadow="md" p="xl" radius="md" withBorder>
         <form onSubmit={handleSubmit}>
@@ -98,7 +97,7 @@ function Upload() {
             leftSection={<IconUpload size={18} />}
             mb="md"
             required
-            description="Upload a main image for your listing"
+            description="Upload a main image for your design"
           />
           
           <FileInput
@@ -156,12 +155,11 @@ function Upload() {
               Cancel
             </Button>
             <Button type="submit" loading={loading} leftSection={<IconCheck size={18} />} style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}>
-              Create Listing
+              Create Design
             </Button>
           </Group>
         </form>
       </Paper>
-      <Footer />
     </main>
   );
 }

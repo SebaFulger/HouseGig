@@ -1,7 +1,6 @@
 
 import './Explore.css';
 import CategoryCarousel from '../components/CategoryCarousel';
-import Footer from '../Footer';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { Loader } from '@mantine/core';
@@ -31,7 +30,7 @@ function Explore() {
     if (listings.length === 0) return [];
     
     const categories = [
-      { title: 'Featured Listings', filter: () => true, isMain: true },
+      { title: 'Featured Designs', filter: () => true, isMain: true },
       { title: 'Recently Added', filter: () => true },
       { title: 'Classical', filter: (l) => l.property_type?.toLowerCase().includes('classical') || l.region?.toLowerCase().includes('classical') || l.title?.toLowerCase().includes('classical') || l.description?.toLowerCase().includes('classical') },
       { title: 'Brutalist', filter: (l) => l.property_type?.toLowerCase().includes('brutalist') || l.region?.toLowerCase().includes('brutalist') || l.title?.toLowerCase().includes('brutalist') || l.description?.toLowerCase().includes('brutalist') },
@@ -66,7 +65,7 @@ function Explore() {
     <main className="explore-main">
       {categories.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#666', padding: '2rem' }}>
-          No listings available yet. Be the first to create one!
+          No designs available yet. Be the first to create one!
         </p>
       ) : (
         <div className="categories-container">
@@ -80,7 +79,6 @@ function Explore() {
           ))}
         </div>
       )}
-      <Footer />
     </main>
   );
 }

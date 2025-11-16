@@ -68,7 +68,7 @@ function Header(){
                 <Box style={{ flex: 1, marginLeft: '1.5rem', marginRight: '1.5rem' }}>
                     <form onSubmit={handleSearch}>
                         <TextInput
-                            placeholder="Search listings..."
+                            placeholder="Search designs..."
                             leftSection={<IconSearch size={18} />}
                             size="md"
                             radius="md"
@@ -198,7 +198,7 @@ function Header(){
                                         variant="subtle"
                                         size="md"
                                         className="header-btn"
-                                        aria-label="Add listing"
+                                        aria-label="Add design"
                                     >
                                         <IconPlus size={22} />
                                     </Button>

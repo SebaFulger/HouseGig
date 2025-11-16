@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import CollectionCover from '../components/CollectionCover';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Paper, Text, Title, Modal, TextInput, Textarea, Loader } from '@mantine/core';
@@ -97,7 +96,7 @@ function Collections() {
           <IconBookmark size={64} style={{ opacity: 0.3, marginBottom: '1rem' }} />
           <Title order={3} mb="md">No Collections Yet</Title>
           <Text c="dimmed" mb="xl">
-            Start organizing your favorite listings by creating your first collection!
+            Start organizing your favorite designs by creating your first collection!
           </Text>
           <Button style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }} onClick={() => setModalOpen(true)}>Create Collection</Button>
         </Paper>
@@ -111,7 +110,7 @@ function Collections() {
                   <h3 className="listing-title">{collection.name}</h3>
                   <div className="listing-meta">
                     <span>{collection.description || 'Collection'}</span>
-                    <span className="listing-price">{collection.listing_count || 0} listings</span>
+                    <span className="listing-price">{collection.listing_count || 0} designs</span>
                   </div>
                 </div>
               </div>
@@ -154,7 +153,6 @@ function Collections() {
         </Button>
       </Modal>
 
-      <Footer />
     </main>
   );
 }

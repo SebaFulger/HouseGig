@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Paper, TextInput, Textarea, Button, FileInput, Group, Loader } from '@mantine/core';
@@ -35,7 +34,7 @@ function EditListing() {
         console.error('Failed to load listing:', error);
         notifications.show({
           title: 'Error',
-          message: 'Failed to load listing',
+          message: 'Failed to load design',
           color: 'red',
           icon: <IconX size={18} />
         });
@@ -97,8 +96,8 @@ function EditListing() {
       await api.updateListing(id, listingData);
       
       notifications.show({
-        title: 'Success!',
-        message: 'Your listing has been updated',
+        title: 'Success',
+        message: 'Your design has been updated',
         color: 'green',
         icon: <IconCheck size={18} />
       });
@@ -107,7 +106,7 @@ function EditListing() {
     } catch (err) {
       notifications.show({
         title: 'Error',
-        message: err.message || 'Failed to update listing. Please try again.',
+        message: err.message || 'Failed to update design. Please try again.',
         color: 'red',
         icon: <IconX size={18} />
       });
@@ -128,7 +127,7 @@ function EditListing() {
 
   return (
     <main className="explore-main">
-      <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1.2, marginTop: '4.2rem', marginBottom: '3.5rem' }}>Edit Listing</h2>
+      <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1.2, marginTop: '4.2rem', marginBottom: '3.5rem' }}>Edit Design</h2>
       
       <Paper shadow="md" p="xl" radius="md" withBorder>
         <form onSubmit={handleSubmit}>
@@ -194,13 +193,12 @@ function EditListing() {
               Cancel
             </Button>
             <Button type="submit" loading={saving} leftSection={<IconCheck size={18} />} style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}>
-              Update Listing
+              Update Design
             </Button>
           </Group>
         </form>
       </Paper>
 
-      <Footer />
     </main>
   );
 }

@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
@@ -273,7 +272,6 @@ function Profile() {
         )}
       </Tabs>
 
-      <Footer />
       <AIAssistant 
         opened={aiOpened} 
         onClose={closeAI}

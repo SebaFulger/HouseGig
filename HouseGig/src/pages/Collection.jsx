@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
@@ -97,7 +96,7 @@ function Collection() {
       </div>
 
       {(!collection.listings || collection.listings.length === 0) ? (
-        <Text c="dimmed" mt="lg">No listings in this collection yet.</Text>
+        <Text c="dimmed" mt="lg">No designs in this collection yet.</Text>
       ) : (
         <div className="listing-grid-responsive">
           {collection.listings.map((listing) => (
@@ -134,7 +133,6 @@ function Collection() {
         </div>
       )}
 
-      <Footer />
     </main>
   );
 }
