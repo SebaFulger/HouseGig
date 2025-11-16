@@ -1,9 +1,10 @@
 import './Explore.css';
 import Footer from '../Footer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { TextInput, PasswordInput, Button, Paper, Title, Text, Anchor } from '@mantine/core';
+import { api } from '../services/api';
 
 function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,10 +13,29 @@ function Auth() {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState(null);
   const { login, register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const backgroundImage = 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1920';
+  // Fetch random listing image for background
+  useEffect(() => {
+    const fetchRandomBackground = async () => {
+      try {
+        const listings = await api.getListings();
+        if (listings && listings.length > 0) {
+          const randomListing = listings[Math.floor(Math.random() * listings.length)];
+          if (randomListing.main_image_url) {
+            setBackgroundImage(randomListing.main_image_url);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch background image:', err);
+        // Keep default background if fetch fails
+      }
+    };
+    
+    fetchRandomBackground();
+  }, []);
 
   // Redirect if already logged in
   if (isAuthenticated) {

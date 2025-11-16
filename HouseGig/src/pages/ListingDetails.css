@@ -230,30 +230,18 @@
   margin-bottom: 2rem;
 }
 
-.listing-vote-section {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: var(--card-bg);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-}
-
-.vote-info-box {
+.listing-vote-section-inline {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 1rem;
 }
 
-.vote-percentage-large {
-  font-size: 2rem;
-  font-weight: 700;
+.vote-percentage-inline {
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--text);
-}
-
-.vote-counts {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin-top: 0.25rem;
 }
 
 .listing-actions-row {

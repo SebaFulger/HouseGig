@@ -66,16 +66,13 @@ function ListingCard({ listing }) {
           {listing.description || 'No description available'}
         </p>
         <div className="vote-section">
-          <div className="vote-info">
-            <span className="vote-percentage">{votePercentage}%</span>
-            <span className="vote-count">({upvotes} upvotes, {downvotes} downvotes)</span>
-          </div>
           <Progress 
             value={votePercentage} 
-            size="sm" 
+            size="xs" 
             color={votePercentage >= 70 ? 'green' : votePercentage >= 40 ? 'yellow' : 'red'}
-            style={{ marginTop: '0.25rem' }}
+            style={{ width: '30px' }}
           />
+          <span className="vote-percentage">{votePercentage}%</span>
         </div>
         <div className="listing-footer">
           <Link 
