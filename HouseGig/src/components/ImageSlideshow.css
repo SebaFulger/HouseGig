@@ -66,6 +66,15 @@
   background: #d1e7dd;
 }
 
+body.dark-mode .slideshow-controls button {
+  background: #505050;
+  color: #ffffff;
+}
+
+body.dark-mode .slideshow-controls button:hover {
+  background: #606060;
+}
+
 /* Bottom-anchored caption footer */
 .slideshow-footer {
   position: fixed;

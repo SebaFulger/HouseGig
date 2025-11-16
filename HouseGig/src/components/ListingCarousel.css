@@ -24,6 +24,14 @@
   border-radius: 4px;
 }
 
+body.dark-mode .carousel {
+  scrollbar-color: rgba(31, 96, 3, 0.8) #3a3a3a;
+}
+
+body.dark-mode .carousel::-webkit-scrollbar-thumb {
+  background: rgba(31, 96, 3, 0.8);
+}
+
 .carousel-card {
   min-width: 220px;
   max-width: 220px;

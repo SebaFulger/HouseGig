@@ -33,6 +33,7 @@ export const getListingCommentsService = async (listingId, limit = 20, offset = 
     .from('comments')
     .select('*')
     .eq('listing_id', listingId)
+    .is('parent_id', null)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 

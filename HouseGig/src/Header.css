@@ -109,3 +109,8 @@ header.header {
 body {
   padding-top: 80px;
 }
+
+/* Dark mode header placeholder text */
+body.dark-mode .header .mantine-TextInput-input::placeholder {
+  color: #999999 !important;
+}

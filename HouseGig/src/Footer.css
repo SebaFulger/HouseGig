@@ -11,3 +11,9 @@
   margin-top: 1rem;
   margin-bottom: 0;
 }
+
+body.dark-mode .footer {
+  background-color: var(--card-bg);
+  color: var(--text);
+  border-top-color: var(--border);
+}

@@ -131,3 +131,8 @@
   font-weight: 500;
   margin-left: 0.1rem;
 }
+
+/* Dark mode support for like button */
+body.dark-mode .like-btn:hover {
+  background: rgba(226, 85, 85, 0.15);
+}
