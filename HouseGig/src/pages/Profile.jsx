@@ -2,10 +2,12 @@ import './Explore.css';
 import Footer from '../Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDisclosure } from '@mantine/hooks';
 import { Paper, Text, Title, Avatar, Button, Tabs, Loader } from '@mantine/core';
-import { IconSettings, IconMessage } from '@tabler/icons-react';
+import { IconSettings, IconMessage, IconSparkles } from '@tabler/icons-react';
 import ListingCard from '../components/ListingCard';
 import CollectionCover from '../components/CollectionCover';
+import AIAssistant from '../components/AIAssistant';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useState, useEffect } from 'react';
@@ -22,6 +24,7 @@ function Profile() {
   const [userCollections, setUserCollections] = useState([]);
   const [upvotedListings, setUpvotedListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [aiOpened, { open: openAI, close: closeAI }] = useDisclosure(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -112,34 +115,44 @@ function Profile() {
               Edit Profile
             </Button>
           ) : (
-            <Button 
-              leftSection={<IconMessage size={18} />} 
-              onClick={async () => {
-                if (!profileUser?.id) {
-                  notifications.show({
-                    title: 'Error',
-                    message: 'User profile not loaded',
-                    color: 'red',
-                  });
-                  return;
-                }
-                try {
-                  console.log('Creating conversation with user:', profileUser.id);
-                  await api.getOrCreateConversation(profileUser.id);
-                  navigate(`/messages?userId=${profileUser.id}`);
-                } catch (error) {
-                  console.error('Failed to start conversation:', error);
-                  notifications.show({
-                    title: 'Error',
-                    message: error?.message || 'Failed to start conversation',
-                    color: 'red',
-                  });
-                }
-              }}
-              style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}
-            >
-              Send Message
-            </Button>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <Button 
+                variant="light"
+                color="violet"
+                leftSection={<IconSparkles size={18} />}
+                onClick={openAI}
+              >
+                Ask AI
+              </Button>
+              <Button 
+                leftSection={<IconMessage size={18} />} 
+                onClick={async () => {
+                  if (!profileUser?.id) {
+                    notifications.show({
+                      title: 'Error',
+                      message: 'User profile not loaded',
+                      color: 'red',
+                    });
+                    return;
+                  }
+                  try {
+                    console.log('Creating conversation with user:', profileUser.id);
+                    await api.getOrCreateConversation(profileUser.id);
+                    navigate(`/messages?userId=${profileUser.id}`);
+                  } catch (error) {
+                    console.error('Failed to start conversation:', error);
+                    notifications.show({
+                      title: 'Error',
+                      message: error?.message || 'Failed to start conversation',
+                      color: 'red',
+                    });
+                  }
+                }}
+                style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}
+              >
+                Send Message
+              </Button>
+            </div>
           )}
         </div>
       </Paper>
@@ -261,6 +274,16 @@ function Profile() {
       </Tabs>
 
       <Footer />
+      <AIAssistant 
+        opened={aiOpened} 
+        onClose={closeAI}
+        context={!isOwnProfile && profileUser ? {
+          type: 'profile',
+          username: profileUser.username,
+          bio: profileUser.bio,
+          listingsCount: userListings.length
+        } : null}
+      />
     </main>
   );
 }

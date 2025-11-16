@@ -2,13 +2,15 @@ import './ListingDetails.css';
 import React from 'react';
 import ImageSlideshow from '../components/ImageSlideshow';
 import GuestPrompt from '../components/GuestPrompt';
+import AIAssistant from '../components/AIAssistant';
 import Footer from '../Footer';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useDisclosure } from '@mantine/hooks';
 import { Container, Loader, Modal, Checkbox, Button, Menu, ActionIcon, Progress } from '@mantine/core';
 import { api } from '../services/api';
 import { notifications } from '@mantine/notifications';
-import { IconDots, IconEdit, IconTrash, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
+import { IconDots, IconEdit, IconTrash, IconArrowUp, IconArrowDown, IconSparkles } from '@tabler/icons-react';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -38,6 +40,7 @@ function ListingDetails() {
   const [editCommentText, setEditCommentText] = React.useState('');
   const textareaRef = React.useRef(null);
   const replyTextareaRef = React.useRef(null);
+  const [aiOpened, { open: openAI, close: closeAI }] = useDisclosure(false);
 
   // Fetch listing data
   React.useEffect(() => {
@@ -478,6 +481,17 @@ function ListingDetails() {
         <div className="listing-header">
           <h1 className="listing-title">{listing.title}</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {isAuthenticated && (
+              <Button
+                variant="light"
+                color="violet"
+                leftSection={<IconSparkles size={18} />}
+                onClick={openAI}
+                size="sm"
+              >
+                Ask AI
+              </Button>
+            )}
             {isAuthenticated && user?.id === listing.owner_id && (
               <Menu shadow="md" width={200}>
                 <Menu.Target>
@@ -938,6 +952,21 @@ function ListingDetails() {
           opened={guestPromptOpen} 
           onClose={() => setGuestPromptOpen(false)} 
           action={guestAction}
+        />
+        <AIAssistant 
+          opened={aiOpened} 
+          onClose={closeAI}
+          context={listing ? {
+            type: 'listing',
+            listingId: parseInt(id),
+            title: listing.title,
+            description: listing.description,
+            property_type: listing.property_type,
+            region: listing.region,
+            price: listing.price,
+            world: listing.world,
+            owner: listing.owner
+          } : null}
         />
       </main>
     </>

@@ -1,10 +1,11 @@
 import './Header.css';
 import {Group, Button, TextInput, Flex, Box, Burger, Menu, ActionIcon, Badge} from '@mantine/core';
-import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus, IconHome, IconLogin, IconLogout, IconMessage } from '@tabler/icons-react';
+import { IconSearch, IconUser, IconBookmark, IconSettings, IconPlus, IconHome, IconLogin, IconLogout, IconMessage, IconSparkles } from '@tabler/icons-react';
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useAuth } from './contexts/AuthContext';
+import AIAssistant from './components/AIAssistant';
 import logo from './assets/logo.png';
 
 function Header(){
@@ -15,6 +16,7 @@ function Header(){
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
+    const [aiOpened, { open: openAI, close: closeAI }] = useDisclosure(false);
 
     const handleLogout = () => {
         logout();
@@ -47,6 +49,7 @@ function Header(){
     }, []);
 
     return(
+        <>
         <header className="header" ref={headerRef}>
             <Flex justify="space-between" align="center" style={{ width: "100%" }}>
                 <Group gap="md">
@@ -99,6 +102,15 @@ function Header(){
                                         onClick={close}
                                     >
                                         Messages
+                                    </Menu.Item>
+                                    <Menu.Item 
+                                        leftSection={<IconSparkles size={18} />}
+                                        onClick={() => {
+                                            close();
+                                            openAI();
+                                        }}
+                                    >
+                                        AI Assistant
                                     </Menu.Item>
                                     <Menu.Item 
                                         leftSection={<IconPlus size={18} />}
@@ -171,6 +183,16 @@ function Header(){
                                         <IconMessage size={22} />
                                     </Button>
                                 </Link>
+                                <Button
+                                    variant="subtle"
+                                    size="md"
+                                    className="header-btn"
+                                    aria-label="AI Assistant"
+                                    onClick={openAI}
+                                    style={{ color: '#9775fa' }}
+                                >
+                                    <IconSparkles size={22} />
+                                </Button>
                                 <Link to="/upload">
                                     <Button
                                         variant="subtle"
@@ -238,6 +260,8 @@ function Header(){
                 )}
             </Flex>
         </header>
+        <AIAssistant opened={aiOpened} onClose={closeAI} />
+        </>
     );
 }
 
