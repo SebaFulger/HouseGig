@@ -376,6 +376,12 @@ class ApiClient {
       method: 'GET',
     });
   }
+
+  async deleteAccount() {
+    return this.request('/users/account', {
+      method: 'DELETE',
+    });
+  }
 }
 
 export const api = new ApiClient();

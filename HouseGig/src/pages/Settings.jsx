@@ -1,18 +1,22 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { Paper, Title, TextInput, Textarea, Button, PasswordInput, Avatar, FileInput, Group, Divider, Text, Select, Switch } from '@mantine/core';
-import { IconUser, IconLock, IconUpload, IconCheck, IconX, IconPalette } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
+import { Paper, Title, TextInput, Textarea, Button, PasswordInput, Avatar, FileInput, Group, Divider, Text, Select, Switch, Modal } from '@mantine/core';
+import { IconUser, IconLock, IconUpload, IconCheck, IconX, IconPalette, IconAlertTriangle } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { api } from '../services/api';
+import { useDisclosure } from '@mantine/hooks';
 
 function Settings() {
-  const { user } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const { darkMode, setDarkMode } = useTheme();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploadingPicture, setUploadingPicture] = useState(false);
+  const [deleteModalOpened, { open: openDeleteModal, close: closeDeleteModal }] = useDisclosure(false);
+  const [deleting, setDeleting] = useState(false);
   const [profileData, setProfileData] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -68,11 +72,16 @@ function Settings() {
     setLoading(true);
     
     try {
-      // TODO: Update profile via API
-      // await api.updateProfile(profileData);
-      console.log('Updating profile:', profileData);
+      const updatePayload = {
+        username: profileData.username,
+        bio: profileData.bio,
+        email: profileData.email
+      };
       
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await api.updateProfile(updatePayload);
+      
+      // Refresh user data in context
+      await refreshUser();
       
       notifications.show({
         title: 'Profile Updated',
@@ -141,6 +150,34 @@ function Settings() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    
+    try {
+      await api.deleteAccount();
+      
+      notifications.show({
+        title: 'Account Deleted',
+        message: 'Your account has been permanently deleted',
+        color: 'green',
+        icon: <IconCheck size={18} />
+      });
+      
+      // Log out and redirect to home
+      logout();
+      navigate('/');
+    } catch (err) {
+      notifications.show({
+        title: 'Error',
+        message: err.message || 'Failed to delete account',
+        color: 'red',
+        icon: <IconX size={18} />
+      });
+      setDeleting(false);
+      closeDeleteModal();
     }
   };
 
@@ -302,11 +339,47 @@ function Settings() {
         <Text size="sm" c="dimmed" mb="md">
           Permanently delete your account and all associated data. This action cannot be undone.
         </Text>
-        <Button color="red" variant="outline">
+        <Button color="red" variant="outline" onClick={openDeleteModal}>
           Delete Account
         </Button>
       </Paper>
-      <Footer />
+
+      {/* Delete Account Confirmation Modal */}
+      <Modal
+        opened={deleteModalOpened}
+        onClose={closeDeleteModal}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <IconAlertTriangle size={24} color="red" />
+            <span style={{ fontWeight: 600 }}>Delete Account</span>
+          </div>
+        }
+        centered
+      >
+        <Text size="sm" mb="md">
+          Are you absolutely sure you want to delete your account? This will permanently delete:
+        </Text>
+        <ul style={{ marginBottom: '1.5rem', paddingLeft: '1.5rem', color: 'var(--muted)' }}>
+          <li>Your profile and account information</li>
+          <li>All your designs</li>
+          <li>All your comments and replies</li>
+          <li>All your collections</li>
+          <li>All your votes and likes</li>
+          <li>All your messages and conversations</li>
+        </ul>
+        <Text size="sm" c="red" weight={600} mb="xl">
+          This action cannot be undone!
+        </Text>
+        <Group justify="flex-end">
+          <Button variant="default" onClick={closeDeleteModal} disabled={deleting}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={handleDeleteAccount} loading={deleting}>
+            Yes, Delete My Account
+          </Button>
+        </Group>
+      </Modal>
+
     </main>
   );
 }

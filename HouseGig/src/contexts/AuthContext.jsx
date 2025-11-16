@@ -59,6 +59,17 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  const refreshUser = async () => {
+    try {
+      const userData = await api.getMe();
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
+      throw error;
+    }
+  };
+
   const requireAuth = (onUnauthenticated) => {
     if (!isAuthenticated) {
       if (onUnauthenticated) {
@@ -76,6 +87,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    refreshUser,
     requireAuth,
   };
 

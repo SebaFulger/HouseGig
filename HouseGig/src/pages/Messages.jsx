@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -543,7 +542,6 @@ function Messages() {
         </div>
       </div>
 
-      <Footer />
     </main>
   );
 }

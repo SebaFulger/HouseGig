@@ -1,5 +1,4 @@
 import './Explore.css';
-import Footer from '../Footer';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -163,11 +162,10 @@ function Auth() {
 
         <Paper shadow="sm" p="md" radius="md" mt="md" withBorder>
           <Text size="sm" c="dimmed" ta="center">
-            <strong>Guest Mode:</strong> You can browse listings without an account. Sign up to create listings, save favorites, and comment.
+            <strong>Guest Mode:</strong> You can browse designs without an account. Sign up to create designs, save favorites, and comment.
           </Text>
         </Paper>
       </div>
-      <Footer />
     </main>
   );
 }

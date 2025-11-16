@@ -90,7 +90,7 @@ function ListingDetails() {
         console.error('Error fetching listing:', error);
         notifications.show({
           title: 'Error',
-          message: 'Failed to load listing',
+          message: 'Failed to load design',
           color: 'red',
         });
       } finally {
@@ -113,8 +113,8 @@ function ListingDetails() {
   if (!listing) {
     return (
       <main className="explore-main">
-        <h2 className="explore-title">Listing Not Found</h2>
-        <p>Sorry, this listing does not exist.</p>
+        <h2 className="explore-title">Design Not Found</h2>
+        <p>Sorry, this design does not exist.</p>
       </main>
     );
   }
@@ -220,7 +220,7 @@ function ListingDetails() {
 
   const handleSave = async () => {
     if (!requireAuth(() => {
-      setGuestAction('save this listing');
+      setGuestAction('save this design');
       setGuestPromptOpen(true);
     })) return;
     try {
@@ -244,7 +244,7 @@ function ListingDetails() {
   };
 
   const handleDeleteListing = async () => {
-    if (!window.confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this design? This action cannot be undone.')) {
       return;
     }
 
@@ -252,7 +252,7 @@ function ListingDetails() {
       await api.deleteListing(id);
       notifications.show({
         title: 'Success',
-        message: 'Listing deleted successfully',
+        message: 'Design deleted successfully',
         color: 'green',
       });
       navigate('/profile');
@@ -260,7 +260,7 @@ function ListingDetails() {
       console.error('Failed to delete listing:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to delete listing',
+        message: 'Failed to delete design',
         color: 'red',
       });
     }
@@ -855,7 +855,7 @@ function ListingDetails() {
 
           {similarListings.length > 0 && (
             <div className="similar-listings">
-              <h2 className="similar-listings-header">More Listings</h2>
+              <h2 className="similar-listings-header">More Designs</h2>
               <div className="similar-listings-grid">
                 {similarListings.map(similarListing => (
                   <Link key={similarListing.id} to={`/listing/${similarListing.id}`} className="similar-listing-card">
@@ -891,7 +891,6 @@ function ListingDetails() {
           )}
         </div>
 
-        <Footer />
         <Modal opened={collectionsModalOpen} onClose={() => setCollectionsModalOpen(false)} title="Save to collections">
           {collections.length === 0 ? (
             <p style={{ color: '#666' }}>You have no collections yet.</p>

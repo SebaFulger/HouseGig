@@ -44,11 +44,23 @@ export const loginService = async (email, password) => {
   }
 
   const user = data.user;
+  
+  // Get username from profiles table first (source of truth)
+  let username = user.user_metadata?.username;
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .single();
+  
+  if (profile?.username) {
+    username = profile.username;
+  }
 
   return generateToken({
     id: user.id,
     email: user.email,
-    username: user.user_metadata?.username || email.split('@')[0],
+    username: username || 'User',
     avatar_url: user.user_metadata?.avatar_url || null,
     bio: user.user_metadata?.bio || null
   });
