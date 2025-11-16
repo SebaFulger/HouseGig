@@ -81,7 +81,22 @@ function ListingCard({ listing }) {
             onClick={(e) => e.stopPropagation()}
             style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            <img src={listing.owner?.avatar_url || 'https://via.placeholder.com/40'} alt={listing.owner?.username || 'User'} className="owner-avatar" />
+            {listing.owner?.avatar_url ? (
+              <img src={listing.owner.avatar_url} alt={listing.owner?.username || 'User'} className="owner-avatar" />
+            ) : (
+              <div className="owner-avatar" style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                backgroundColor: '#f0f0f0',
+                color: '#999'
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+            )}
             <span className="owner-username">{listing.owner?.username || 'Unknown User'}</span>
           </Link>
           <div className="listing-stats" style={{alignItems: 'center', gap: '0.5rem'}}>

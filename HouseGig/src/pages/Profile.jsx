@@ -41,9 +41,13 @@ function Profile() {
           const listings = await api.getMyListings();
           setUserListings(listings);
           
-          // Fetch collections
-          const collections = await api.getCollections();
-          setUserCollections(collections);
+          // Fetch collections (non-blocking)
+          try {
+            const collections = await api.getCollections();
+            setUserCollections(collections);
+          } catch (error) {
+            console.error('Error fetching collections:', error);
+          }
           
           // Fetch upvoted listings
           const upvoted = await api.getMyUpvotedListings();
@@ -53,9 +57,13 @@ function Profile() {
           const listings = await api.getUserListings(username);
           setUserListings(listings);
           
-          // Fetch public collections
-          const collections = await api.getUserCollections(username);
-          setUserCollections(collections);
+          // Fetch public collections (non-blocking)
+          try {
+            const collections = await api.getUserCollections(username);
+            setUserCollections(collections);
+          } catch (error) {
+            console.error('Error fetching collections:', error);
+          }
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -168,7 +176,65 @@ function Profile() {
             <div className="listing-grid-responsive">
               {userCollections.map(collection => (
                 <Link key={collection.id} to={`/collection/${collection.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <CollectionCover collection={collection} />
+                  <div style={{
+                    background: 'var(--card-bg)',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                    maxWidth: '340px',
+                    minWidth: '260px',
+                    transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+                    boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                  >
+                    <CollectionCover images={collection.cover_images || []} />
+                    <div style={{ 
+                      padding: '1.2rem 1rem 1rem 1rem',
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <h3 style={{ 
+                          fontSize: '1.18rem',
+                          margin: '0 0 8px 0',
+                          fontWeight: 600,
+                          color: 'var(--text)'
+                        }}>
+                          {collection.name}
+                        </h3>
+                        {collection.description && (
+                          <p style={{ 
+                            fontSize: '0.9rem',
+                            color: 'var(--muted)',
+                            margin: '0 0 8px 0',
+                            lineHeight: '1.4',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxHeight: 'calc(1.4em * 2)'
+                          }}>
+                            {collection.description}
+                          </p>
+                        )}
+                      </div>
+                      <p style={{ 
+                        margin: '1rem 0 0 0',
+                        color: 'var(--muted)',
+                        fontSize: '0.9rem',
+                        fontWeight: 500
+                      }}>
+                        {collection.listing_count || 0} {collection.listing_count === 1 ? 'listing' : 'listings'}
+                      </p>
+                    </div>
+                  </div>
                 </Link>
               ))}
             </div>

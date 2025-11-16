@@ -261,16 +261,34 @@ function Messages() {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <img
-                        src={otherUser?.avatar_url || 'https://via.placeholder.com/40'}
-                        alt={otherUser?.username}
-                        style={{
+                      {otherUser?.avatar_url ? (
+                        <img
+                          src={otherUser.avatar_url}
+                          alt={otherUser?.username}
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      ) : (
+                        <div style={{
                           width: '48px',
                           height: '48px',
                           borderRadius: '50%',
-                          objectFit: 'cover'
-                        }}
-                      />
+                          backgroundColor: '#f0f0f0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#999'
+                        }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                        </div>
+                      )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>
@@ -329,16 +347,34 @@ function Messages() {
                   .filter(p => p.id !== user.id)
                   .map(p => (
                     <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <img
-                        src={p.avatar_url || 'https://via.placeholder.com/40'}
-                        alt={p.username}
-                        style={{
+                      {p.avatar_url ? (
+                        <img
+                          src={p.avatar_url}
+                          alt={p.username}
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      ) : (
+                        <div style={{
                           width: '40px',
                           height: '40px',
                           borderRadius: '50%',
-                          objectFit: 'cover'
-                        }}
-                      />
+                          backgroundColor: '#f0f0f0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#999'
+                        }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                        </div>
+                      )}
                       <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>{p.username}</span>
                     </div>
                   ))}
@@ -369,16 +405,34 @@ function Messages() {
                           flexDirection: isOwn ? 'row-reverse' : 'row'
                         }}>
                           {!isOwn && (
-                            <img
-                              src={msg.sender?.avatar_url || 'https://via.placeholder.com/32'}
-                              alt={msg.sender?.username}
-                              style={{
+                            msg.sender?.avatar_url ? (
+                              <img
+                                src={msg.sender.avatar_url}
+                                alt={msg.sender?.username}
+                                style={{
+                                  width: '32px',
+                                  height: '32px',
+                                  borderRadius: '50%',
+                                  objectFit: 'cover'
+                                }}
+                              />
+                            ) : (
+                              <div style={{
                                 width: '32px',
                                 height: '32px',
                                 borderRadius: '50%',
-                                objectFit: 'cover'
-                              }}
-                            />
+                                backgroundColor: '#f0f0f0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#999'
+                              }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                  <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                              </div>
+                            )
                           )}
                           <div>
                             <div style={{

@@ -136,14 +136,14 @@ function Upload() {
           <Group grow mb="md">
             <TextInput
               label="Property Type"
-              placeholder="e.g. House, Garden"
+              placeholder="e.g. House, Garden, Cabin"
               value={formData.property_type}
               onChange={(e) => setFormData({ ...formData, property_type: e.target.value })}
             />
 
             <TextInput
               label="Region/Style"
-              placeholder="e.g. Spain, Eisengard, Narnia"
+              placeholder="e.g. Spain, Brutalist, Modern"
               value={formData.region}
               onChange={(e) => setFormData({ ...formData, region: e.target.value })}
             />

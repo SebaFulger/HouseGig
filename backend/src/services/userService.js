@@ -2,6 +2,8 @@ import { supabase } from '../config/supabaseClient.js';
 
 export const getUserProfileService = async (username) => {
   try {
+    console.log('getUserProfileService: Looking up username:', username);
+    
     // Get user from profiles table first
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
@@ -9,23 +11,48 @@ export const getUserProfileService = async (username) => {
       .eq('username', username)
       .maybeSingle();
     
+    console.log('Profile fetch result:', { profile, error: profileError });
+    
     if (profileError) {
       console.error('Profile fetch error:', profileError);
       throw { statusCode: 500, message: 'Failed to fetch profile' };
     }
     
-    if (!profile) {
+    if (profile) {
+      // Return profile data from profiles table
+      return {
+        id: profile.id,
+        username: profile.username,
+        email: profile.email || null,
+        avatar_url: profile.avatar_url || null,
+        bio: profile.bio || null,
+        created_at: profile.created_at
+      };
+    }
+    
+    // If not found in profiles, try auth.users table as fallback
+    console.log('Profile not in profiles table, checking auth.users with user_metadata.username');
+    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
+    
+    if (authError) {
+      console.error('Auth users list error:', authError);
+      throw { statusCode: 500, message: 'Failed to fetch users' };
+    }
+    
+    const user = users.find(u => u.user_metadata?.username === username);
+    
+    if (!user) {
       throw { statusCode: 404, message: 'User not found' };
     }
     
-    // Return profile data directly - no need to fetch from auth.users
+    // Return data from auth.users
     return {
-      id: profile.id,
-      username: profile.username,
-      email: profile.email || null,
-      avatar_url: profile.avatar_url || null,
-      bio: profile.bio || null,
-      created_at: profile.created_at
+      id: user.id,
+      username: user.user_metadata?.username || user.email.split('@')[0],
+      email: user.email || null,
+      avatar_url: user.user_metadata?.avatar_url || null,
+      bio: user.user_metadata?.bio || null,
+      created_at: user.created_at
     };
   } catch (error) {
     console.error('Error in getUserProfileService:', error);

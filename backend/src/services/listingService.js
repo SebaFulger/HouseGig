@@ -279,9 +279,22 @@ export const getListingsByUsernameService = async (username, limit = 20, offset 
     .from('profiles')
     .select('id')
     .eq('username', username)
-    .single();
+    .maybeSingle();
 
-  if (profileError || !profile) {
+  let userId = profile?.id;
+
+  // If not found in profiles, check auth.users as fallback
+  if (!userId) {
+    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
+    if (!authError && users) {
+      const user = users.find(u => u.user_metadata?.username === username);
+      if (user) {
+        userId = user.id;
+      }
+    }
+  }
+
+  if (!userId) {
     throw { statusCode: 404, message: 'User not found' };
   }
 
@@ -289,7 +302,7 @@ export const getListingsByUsernameService = async (username, limit = 20, offset 
   const { data, error } = await supabase
     .from('listings')
     .select('*')
-    .eq('owner_id', profile.id)
+    .eq('owner_id', userId)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -342,8 +355,11 @@ export const getListingsByUsernameService = async (username, limit = 20, offset 
 export const uploadImageService = async (file) => {
   const fileExt = file.originalname.split('.').pop();
   const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-  const filePath = `${fileName}`;
+  const filePath = `listings/${fileName}`; // Add listings folder for organization
 
+  console.log('Uploading file:', { fileName, filePath, mimetype: file.mimetype });
+
+  // Upload to Supabase Storage with service role (bypasses RLS)
   const { data, error } = await supabase
     .storage
     .from('ImgB')
@@ -354,13 +370,18 @@ export const uploadImageService = async (file) => {
     });
 
   if (error) {
+    console.error('Storage upload error:', error);
     throw { statusCode: 500, message: `Image upload failed: ${error.message}` };
   }
+
+  console.log('Upload successful:', data);
 
   const { data: { publicUrl } } = supabase
     .storage
     .from('ImgB')
     .getPublicUrl(filePath);
+
+  console.log('Public URL:', publicUrl);
 
   return publicUrl;
 }
