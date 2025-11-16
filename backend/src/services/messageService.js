@@ -2,77 +2,103 @@ import { supabase } from '../config/supabaseClient.js';
 
 // Get all conversations for the current user
 export const getUserConversationsService = async (userId) => {
-  // Get conversations where user is a participant
-  const { data: participantRows, error: partError } = await supabase
-    .from('conversation_participants')
-    .select('conversation_id, last_read_at')
-    .eq('user_id', userId);
+  try {
+    // Get conversations where user is a participant
+    const { data: participantRows, error: partError } = await supabase
+      .from('conversation_participants')
+      .select('conversation_id, last_read_at')
+      .eq('user_id', userId);
 
-  if (partError) throw { statusCode: 400, message: partError.message };
-  if (!participantRows || participantRows.length === 0) return [];
+    if (partError) {
+      console.error('Error fetching participants:', partError);
+      throw { statusCode: 400, message: partError.message };
+    }
+    
+    if (!participantRows || participantRows.length === 0) return [];
 
-  const conversationIds = participantRows.map(p => p.conversation_id);
-  const lastReadMap = new Map(participantRows.map(p => [p.conversation_id, p.last_read_at]));
+    const conversationIds = participantRows.map(p => p.conversation_id);
+    const lastReadMap = new Map(participantRows.map(p => [p.conversation_id, p.last_read_at]));
 
-  // Get conversation details
-  const { data: conversations, error: convError } = await supabase
-    .from('conversations')
-    .select('*')
-    .in('id', conversationIds)
-    .order('updated_at', { ascending: false });
+    // Get conversation details
+    const { data: conversations, error: convError } = await supabase
+      .from('conversations')
+      .select('*')
+      .in('id', conversationIds)
+      .order('updated_at', { ascending: false });
 
-  if (convError) throw { statusCode: 400, message: convError.message };
+    if (convError) {
+      console.error('Error fetching conversations:', convError);
+      throw { statusCode: 400, message: convError.message };
+    }
 
-  // For each conversation, get other participants and last message
-  const enrichedConversations = await Promise.all(
-    (conversations || []).map(async (conv) => {
-      // Get other participants (not current user)
-      const { data: participants } = await supabase
-        .from('conversation_participants')
-        .select('user_id')
-        .eq('conversation_id', conv.id)
-        .neq('user_id', userId);
+    // For each conversation, get other participants and last message
+    const enrichedConversations = await Promise.all(
+      (conversations || []).map(async (conv) => {
+        try {
+          // Get other participants (not current user)
+          const { data: participants } = await supabase
+            .from('conversation_participants')
+            .select('user_id')
+            .eq('conversation_id', conv.id)
+            .neq('user_id', userId);
 
-      const otherUserIds = (participants || []).map(p => p.user_id);
+          const otherUserIds = (participants || []).map(p => p.user_id);
 
-      // Fetch profiles for other users
-      let otherUsers = [];
-      if (otherUserIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('id, username, avatar_url')
-          .in('id', otherUserIds);
-        otherUsers = profiles || [];
-      }
+          // Fetch profiles for other users
+          let otherUsers = [];
+          if (otherUserIds.length > 0) {
+            const { data: profiles, error: profileError } = await supabase
+              .from('profiles')
+              .select('id, username, avatar_url')
+              .in('id', otherUserIds);
+            
+            if (profileError) {
+              console.error('Error fetching profiles:', profileError);
+            }
+            otherUsers = profiles || [];
+          }
 
-      // Get last message
-      const { data: lastMsg } = await supabase
-        .from('messages')
-        .select('content, created_at, sender_id')
-        .eq('conversation_id', conv.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+          // Get last message
+          const { data: lastMsg } = await supabase
+            .from('messages')
+            .select('content, created_at, sender_id')
+            .eq('conversation_id', conv.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
 
-      // Count unread messages
-      const lastRead = lastReadMap.get(conv.id);
-      const { count: unreadCount } = await supabase
-        .from('messages')
-        .select('id', { count: 'exact', head: true })
-        .eq('conversation_id', conv.id)
-        .neq('sender_id', userId)
-        .gt('created_at', lastRead || '1970-01-01');
+          // Count unread messages
+          const lastRead = lastReadMap.get(conv.id);
+          const { count: unreadCount } = await supabase
+            .from('messages')
+            .select('id', { count: 'exact', head: true })
+            .eq('conversation_id', conv.id)
+            .neq('sender_id', userId)
+            .gt('created_at', lastRead || '1970-01-01');
 
-      return {
-        ...conv,
-        other_users: otherUsers,
-        last_message: lastMsg || null,
-        unread_count: unreadCount || 0
-      };
-    })
-  );
+          return {
+            ...conv,
+            other_users: otherUsers,
+            last_message: lastMsg || null,
+            unread_count: unreadCount || 0
+          };
+        } catch (convErr) {
+          console.error('Error enriching conversation:', convErr);
+          return {
+            ...conv,
+            other_users: [],
+            last_message: null,
+            unread_count: 0
+          };
+        }
+      })
+    );
 
-  return enrichedConversations;
+    return enrichedConversations;
+  } catch (error) {
+    console.error('Error in getUserConversationsService:', error);
+    throw error;
+  }
 };
 
 // Get or create a conversation between two users
@@ -123,63 +149,83 @@ export const getOrCreateConversationService = async (userId, otherUserId) => {
 
 // Get a specific conversation with messages
 export const getConversationService = async (conversationId, userId) => {
-  // Verify user is participant
-  const { data: participant } = await supabase
-    .from('conversation_participants')
-    .select('id')
-    .eq('conversation_id', conversationId)
-    .eq('user_id', userId)
-    .single();
+  try {
+    // Verify user is participant
+    const { data: participant, error: partError } = await supabase
+      .from('conversation_participants')
+      .select('id')
+      .eq('conversation_id', conversationId)
+      .eq('user_id', userId)
+      .maybeSingle();
 
-  if (!participant) throw { statusCode: 403, message: 'Not authorized' };
+    if (partError) {
+      console.error('Error checking participant:', partError);
+      throw { statusCode: 403, message: 'Authorization check failed' };
+    }
 
-  // Get conversation
-  const { data: conversation, error: convError } = await supabase
-    .from('conversations')
-    .select('*')
-    .eq('id', conversationId)
-    .single();
+    if (!participant) throw { statusCode: 403, message: 'Not authorized' };
 
-  if (convError || !conversation) throw { statusCode: 404, message: 'Conversation not found' };
+    // Get conversation
+    const { data: conversation, error: convError } = await supabase
+      .from('conversations')
+      .select('*')
+      .eq('id', conversationId)
+      .single();
 
-  // Get all participants
-  const { data: participants } = await supabase
-    .from('conversation_participants')
-    .select('user_id')
-    .eq('conversation_id', conversationId);
+    if (convError || !conversation) {
+      console.error('Error fetching conversation:', convError);
+      throw { statusCode: 404, message: 'Conversation not found' };
+    }
 
-  const userIds = (participants || []).map(p => p.user_id);
+    // Get all participants
+    const { data: participants } = await supabase
+      .from('conversation_participants')
+      .select('user_id')
+      .eq('conversation_id', conversationId);
 
-  // Fetch profiles
-  let users = [];
-  if (userIds.length > 0) {
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('id, username, avatar_url')
-      .in('id', userIds);
-    users = profiles || [];
+    const userIds = (participants || []).map(p => p.user_id);
+
+    // Fetch profiles
+    let users = [];
+    if (userIds.length > 0) {
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url')
+        .in('id', userIds);
+      
+      if (profileError) {
+        console.error('Error fetching profiles:', profileError);
+      }
+      users = profiles || [];
+    }
+
+    // Get messages
+    const { data: messages, error: msgError } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('conversation_id', conversationId)
+      .order('created_at', { ascending: true });
+
+    if (msgError) {
+      console.error('Error fetching messages:', msgError);
+      throw { statusCode: 400, message: msgError.message };
+    }
+
+    // Attach sender profiles to messages
+    const messagesWithUsers = (messages || []).map(msg => {
+      const sender = users.find(u => u.id === msg.sender_id);
+      return { ...msg, sender };
+    });
+
+    return {
+      ...conversation,
+      participants: users,
+      messages: messagesWithUsers
+    };
+  } catch (error) {
+    console.error('Error in getConversationService:', error);
+    throw error;
   }
-
-  // Get messages
-  const { data: messages, error: msgError } = await supabase
-    .from('messages')
-    .select('*')
-    .eq('conversation_id', conversationId)
-    .order('created_at', { ascending: true });
-
-  if (msgError) throw { statusCode: 400, message: msgError.message };
-
-  // Attach sender profiles to messages
-  const messagesWithUsers = (messages || []).map(msg => {
-    const sender = users.find(u => u.id === msg.sender_id);
-    return { ...msg, sender };
-  });
-
-  return {
-    ...conversation,
-    participants: users,
-    messages: messagesWithUsers
-  };
 };
 
 // Send a message in a conversation

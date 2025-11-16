@@ -55,14 +55,19 @@ function Messages() {
     try {
       setLoading(true);
       const data = await api.getConversations();
-      setConversations(data);
+      console.log('Conversations loaded:', data);
+      setConversations(data || []);
     } catch (error) {
       console.error('Failed to load conversations:', error);
+      // Show detailed error
+      const errorMessage = error?.message || 'Failed to load conversations';
       notifications.show({
-        title: 'Error',
-        message: 'Failed to load conversations',
+        title: 'Error Loading Conversations',
+        message: errorMessage,
         color: 'red',
+        autoClose: 5000,
       });
+      setConversations([]);
     } finally {
       setLoading(false);
     }
@@ -71,11 +76,17 @@ function Messages() {
   const handleSelectConversation = async (conversationId) => {
     try {
       const conversation = await api.getConversation(conversationId);
+      console.log('Conversation loaded:', conversation);
       setSelectedConversation(conversation);
       setMessages(conversation.messages || []);
       
       // Mark as read
-      await api.markConversationRead(conversationId);
+      try {
+        await api.markConversationRead(conversationId);
+      } catch (readError) {
+        console.error('Failed to mark as read:', readError);
+        // Don't show error to user, it's not critical
+      }
       
       // Update unread count in sidebar
       setConversations(prev =>
@@ -85,9 +96,10 @@ function Messages() {
       );
     } catch (error) {
       console.error('Failed to load conversation:', error);
+      const errorMessage = error?.message || 'Failed to load conversation';
       notifications.show({
         title: 'Error',
-        message: 'Failed to load conversation',
+        message: errorMessage,
         color: 'red',
       });
     }
@@ -95,19 +107,20 @@ function Messages() {
 
   const handleStartConversation = async (otherUserId) => {
     try {
+      console.log('Starting conversation with user:', otherUserId);
       const conversation = await api.getOrCreateConversation(otherUserId);
+      console.log('Conversation created/found:', conversation);
       setSelectedConversation(conversation);
       setMessages(conversation.messages || []);
       
-      // Add to conversations list if new
-      if (!conversations.find(c => c.id === conversation.id)) {
-        setConversations(prev => [conversation, ...prev]);
-      }
+      // Refresh conversations list to show the new one
+      await fetchConversations();
     } catch (error) {
       console.error('Failed to start conversation:', error);
+      const errorMessage = error?.message || 'Failed to start conversation';
       notifications.show({
         title: 'Error',
-        message: 'Failed to start conversation',
+        message: errorMessage,
         color: 'red',
       });
     }
@@ -172,8 +185,28 @@ function Messages() {
 
   return (
     <main className="explore-main" style={{ paddingBottom: 0 }}>
-      <div style={{ marginTop: '4.2rem', marginBottom: '1rem' }}>
+      <div style={{ marginTop: '4.2rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1.2, margin: 0 }}>Messages</h2>
+        <button
+          onClick={() => {
+            fetchConversations();
+            if (selectedConversation) {
+              handleSelectConversation(selectedConversation.id);
+            }
+          }}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#1971c2',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            fontWeight: 500
+          }}
+        >
+          Refresh
+        </button>
       </div>
 
       <div style={{ 
