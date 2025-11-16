@@ -362,6 +362,20 @@ class ApiClient {
       method: 'POST',
     });
   }
+
+  // AI Assistant API
+  async sendAIMessage(messages, context = null) {
+    return this.request('/ai/chat', {
+      method: 'POST',
+      body: JSON.stringify({ messages, context }),
+    });
+  }
+
+  async checkAIHealth() {
+    return this.request('/ai/health', {
+      method: 'GET',
+    });
+  }
 }
 
 export const api = new ApiClient();
