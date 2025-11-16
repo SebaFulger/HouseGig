@@ -41,16 +41,38 @@ html, body {
   min-width: 320px;
   min-height: 100vh;
   height: 100%;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+body.dark-mode {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+body.dark-mode html {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--bg);
 }
 
 main {
   flex: 1;
+  background-color: var(--bg);
+}
+
+body.dark-mode #root {
+  background-color: var(--bg) !important;
+}
+
+body.dark-mode main {
+  background-color: var(--bg) !important;
 }
 
 h1 {
@@ -232,6 +254,34 @@ body.dark-mode .mantine-Menu-item:hover {
   background-color: #505050;
 }
 
+/* Mantine Modal - Dark Mode */
+body.dark-mode .mantine-Modal-root {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .mantine-Modal-content {
+  background-color: var(--card-bg);
+  color: var(--text);
+}
+
+body.dark-mode .mantine-Modal-header {
+  background-color: var(--card-bg);
+  color: var(--text);
+  border-bottom-color: var(--border);
+}
+
+body.dark-mode .mantine-Modal-title {
+  color: var(--text);
+}
+
+body.dark-mode .mantine-Modal-close {
+  color: var(--text);
+}
+
+body.dark-mode .mantine-Modal-close:hover {
+  background-color: #505050;
+}
+
 /* Mantine Select dropdowns */
 body.dark-mode .mantine-Select-dropdown,
 body.dark-mode .mantine-Select-item {
@@ -324,4 +374,32 @@ body.dark-mode .listing-views span {
 
 body.dark-mode .listing-grid-responsive .listing-card {
   background-color: var(--card-bg);
+}
+
+/* Additional dark mode fixes for buttons and inputs */
+body.dark-mode .mantine-Button-root {
+  color: var(--text);
+}
+
+body.dark-mode .mantine-Button-root[variant="outline"] {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+body.dark-mode .mantine-Button-root[variant="outline"]:hover {
+  background-color: #505050;
+}
+
+body.dark-mode .mantine-Button-root[variant="filled"] {
+  background-color: rgba(31, 96, 3, 0.8);
+}
+
+body.dark-mode .mantine-Input-input {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+body.dark-mode .mantine-Input-input::placeholder {
+  color: #999999 !important;
 }

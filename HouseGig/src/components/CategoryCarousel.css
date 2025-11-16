@@ -59,6 +59,7 @@
   z-index: 10;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: #333;
 }
 
 .carousel-nav-btn:hover {
@@ -91,7 +92,16 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-/* Responsive adjustments */
+body.dark-mode .carousel-nav-btn {
+  background: #3a3a3a;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+body.dark-mode .carousel-nav-btn:hover {
+  background: #4a4a4a;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
 @media (max-width: 768px) {
   .category-carousel-item {
     width: 240px;

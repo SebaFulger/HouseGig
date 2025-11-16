@@ -214,24 +214,25 @@ function Messages() {
         gridTemplateColumns: '350px 1fr', 
         gap: '1rem', 
         height: 'calc(100vh - 200px)',
-        border: '1px solid #e0e0e0',
+        border: '1px solid var(--border)',
         borderRadius: '12px',
         overflow: 'hidden',
-        backgroundColor: '#fff'
+        backgroundColor: 'var(--surface)'
       }}>
         {/* Conversations sidebar */}
         <div style={{ 
-          borderRight: '1px solid #e0e0e0', 
+          borderRight: '1px solid var(--border)', 
           display: 'flex', 
           flexDirection: 'column',
-          height: '100%'
+          height: '100%',
+          backgroundColor: 'var(--surface)'
         }}>
-          <div style={{ padding: '1rem', borderBottom: '1px solid #e0e0e0' }}>
-            <h3 style={{ margin: 0, fontSize: '1.2rem' }}>Conversations</h3>
+          <div style={{ padding: '1rem', borderBottom: '1px solid var(--border)' }}>
+            <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text)' }}>Conversations</h3>
           </div>
           <ScrollArea style={{ flex: 1 }}>
             {conversations.length === 0 ? (
-              <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted)' }}>
                 <p>No conversations yet</p>
                 <p style={{ fontSize: '0.9rem' }}>Visit a user's profile to start chatting</p>
               </div>
@@ -245,13 +246,14 @@ function Messages() {
                     style={{
                       padding: '1rem',
                       cursor: 'pointer',
-                      borderBottom: '1px solid #f0f0f0',
-                      backgroundColor: selectedConversation?.id === conv.id ? '#f8f9fa' : 'transparent',
-                      transition: 'background-color 0.2s'
+                      borderBottom: '1px solid var(--border)',
+                      backgroundColor: selectedConversation?.id === conv.id ? '#505050' : 'transparent',
+                      transition: 'background-color 0.2s',
+                      color: 'var(--text)'
                     }}
                     onMouseEnter={(e) => {
                       if (selectedConversation?.id !== conv.id) {
-                        e.currentTarget.style.backgroundColor = '#fafafa';
+                        e.currentTarget.style.backgroundColor = '#505050';
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -277,11 +279,12 @@ function Messages() {
                           width: '48px',
                           height: '48px',
                           borderRadius: '50%',
-                          backgroundColor: '#f0f0f0',
+                          backgroundColor: 'var(--card-bg)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: '#999'
+                          color: 'var(--muted)',
+                          border: '2px solid var(--border)'
                         }}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -319,7 +322,7 @@ function Messages() {
                             {conv.last_message.content}
                           </div>
                         )}
-                        <div style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.25rem' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.25rem' }}>
                           {conv.last_message ? formatTime(conv.last_message.created_at) : formatTime(conv.created_at)}
                         </div>
                       </div>
@@ -338,7 +341,7 @@ function Messages() {
               {/* Header */}
               <div style={{
                 padding: '1rem',
-                borderBottom: '1px solid #e0e0e0',
+                borderBottom: '1px solid var(--border)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.75rem'
@@ -363,11 +366,12 @@ function Messages() {
                           width: '40px',
                           height: '40px',
                           borderRadius: '50%',
-                          backgroundColor: '#f0f0f0',
+                          backgroundColor: 'var(--card-bg)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: '#999'
+                          color: 'var(--muted)',
+                          border: '2px solid var(--border)'
                         }}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -375,7 +379,7 @@ function Messages() {
                           </svg>
                         </div>
                       )}
-                      <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>{p.username}</span>
+                      <span style={{ fontWeight: 600, fontSize: '1.1rem', color: 'var(--text)' }}>{p.username}</span>
                     </div>
                   ))}
               </div>
@@ -383,7 +387,7 @@ function Messages() {
               {/* Messages */}
               <ScrollArea style={{ flex: 1, padding: '1rem' }}>
                 {messages.length === 0 ? (
-                  <div style={{ textAlign: 'center', color: '#666', marginTop: '2rem' }}>
+                  <div style={{ textAlign: 'center', color: 'var(--muted)', marginTop: '2rem' }}>
                     <p>No messages yet. Start the conversation!</p>
                   </div>
                 ) : (
@@ -421,11 +425,12 @@ function Messages() {
                                 width: '32px',
                                 height: '32px',
                                 borderRadius: '50%',
-                                backgroundColor: '#f0f0f0',
+                                backgroundColor: 'var(--card-bg)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#999'
+                                color: 'var(--muted)',
+                                border: '2px solid var(--border)'
                               }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -436,17 +441,18 @@ function Messages() {
                           )}
                           <div>
                             <div style={{
-                              backgroundColor: isOwn ? '#1971c2' : '#f1f3f5',
-                              color: isOwn ? '#fff' : '#000',
+                              backgroundColor: isOwn ? '#1971c2' : 'var(--card-bg)',
+                              color: isOwn ? '#fff' : 'var(--text)',
                               padding: '0.75rem 1rem',
                               borderRadius: '12px',
-                              wordWrap: 'break-word'
+                              wordWrap: 'break-word',
+                              border: !isOwn ? '1px solid var(--border)' : 'none'
                             }}>
                               {msg.content}
                             </div>
                             <div style={{
                               fontSize: '0.75rem',
-                              color: '#999',
+                              color: 'var(--muted)',
                               marginTop: '0.25rem',
                               textAlign: isOwn ? 'right' : 'left'
                             }}>
@@ -464,8 +470,8 @@ function Messages() {
               {/* Input */}
               <div style={{
                 padding: '1rem',
-                borderTop: '1px solid #e0e0e0',
-                backgroundColor: '#fafafa'
+                borderTop: '1px solid var(--border)',
+                backgroundColor: 'var(--surface)'
               }}>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
                   <textarea
@@ -487,13 +493,15 @@ function Messages() {
                     style={{
                       flex: 1,
                       padding: '0.75rem',
-                      border: '1px solid #e0e0e0',
+                      border: '1px solid var(--border)',
                       borderRadius: '8px',
                       fontSize: '0.95rem',
                       resize: 'none',
                       fontFamily: 'inherit',
                       minHeight: '44px',
-                      maxHeight: '120px'
+                      maxHeight: '120px',
+                      backgroundColor: 'var(--surface)',
+                      color: 'var(--text)'
                     }}
                   />
                   <button
@@ -501,7 +509,7 @@ function Messages() {
                     disabled={!messageText.trim() || sending}
                     style={{
                       padding: '0.75rem 1.5rem',
-                      backgroundColor: messageText.trim() && !sending ? '#1971c2' : '#ccc',
+                      backgroundColor: messageText.trim() && !sending ? '#1971c2' : 'var(--muted)',
                       color: '#fff',
                       border: 'none',
                       borderRadius: '8px',
@@ -522,7 +530,7 @@ function Messages() {
               alignItems: 'center',
               justifyContent: 'center',
               height: '100%',
-              color: '#666'
+              color: 'var(--text)'
             }}>
               <div style={{ textAlign: 'center' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.3 }}>

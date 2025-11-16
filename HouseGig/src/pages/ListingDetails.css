@@ -2,6 +2,11 @@
   padding: 2.5rem 0 6rem 2rem;
   max-width: 1440px;
   margin: 0 auto;
+  background-color: var(--bg);
+}
+
+body.dark-mode .listing-details-main {
+  background-color: var(--bg) !important;
 }
 
 .listing-images-section {
@@ -465,6 +470,25 @@ body.dark-mode .comment-avatar-placeholder {
 
 body.dark-mode .comment-avatar-placeholder svg {
   color: #909296;
+}
+
+/* Additional dark mode fixes for inputs and checkboxes */
+body.dark-mode .comment-input::placeholder {
+  color: #999999 !important;
+}
+
+body.dark-mode .mantine-Checkbox-input {
+  background-color: var(--surface);
+  border-color: var(--border);
+}
+
+body.dark-mode .mantine-Checkbox-input:checked {
+  background-color: rgba(31, 96, 3, 0.8);
+  border-color: rgba(31, 96, 3, 0.8);
+}
+
+body.dark-mode .mantine-Checkbox-label {
+  color: var(--text);
 }
 
 .comment-content {
