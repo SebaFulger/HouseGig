@@ -862,8 +862,12 @@ function ListingDetails() {
                     <img src={similarListing.main_image_url} alt={similarListing.title} className="similar-listing-image" />
                     <div className="similar-listing-info">
                       <div className="similar-listing-title">{similarListing.title}</div>
-                      <div className="similar-listing-meta">
-                        <span className="similar-listing-price">{similarListing.price}</span>
+                      <div className="similar-listing-owner-row">
+                        <img 
+                          src={similarListing.owner?.avatar_url || 'https://via.placeholder.com/40'} 
+                          alt={similarListing.owner?.username || 'User'} 
+                          className="similar-listing-avatar"
+                        />
                         <span className="similar-listing-owner">{similarListing.owner?.username || 'Unknown'}</span>
                       </div>
                       <div className="similar-listing-stats">
@@ -963,8 +967,6 @@ function ListingDetails() {
             description: listing.description,
             property_type: listing.property_type,
             region: listing.region,
-            price: listing.price,
-            world: listing.world,
             owner: listing.owner
           } : null}
         />

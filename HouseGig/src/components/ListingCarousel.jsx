@@ -48,8 +48,8 @@ function ListingCarousel({ listings }) {
             <img src={listing.main_image_url} alt={listing.title} className="carousel-image" />
             <div className="carousel-info">
               <h4 className="carousel-title">{listing.title}</h4>
-              <div className="carousel-world">{listing.world}</div>
-              <div className="carousel-price">{listing.price} Gold</div>
+              {listing.region && <div className="carousel-world">{listing.region}</div>}
+              {listing.property_type && <div className="carousel-price">{listing.property_type}</div>}
             </div>
           </Link>
         ))}

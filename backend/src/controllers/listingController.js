@@ -37,9 +37,6 @@ export const getAllListings = async (req, res, next) => {
     const filters = {
       search: req.query.search,
       propertyType: req.query.propertyType,
-      world: req.query.world,
-      rarity: req.query.rarity,
-      magicLevel: req.query.magicLevel,
       sortBy: req.query.sortBy || 'created_at',
       limit: parseInt(req.query.limit) || 20,
       offset: parseInt(req.query.offset) || 0
