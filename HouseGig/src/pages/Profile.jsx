@@ -107,11 +107,25 @@ function Profile() {
             <Button 
               leftSection={<IconMessage size={18} />} 
               onClick={async () => {
+                if (!profileUser?.id) {
+                  notifications.show({
+                    title: 'Error',
+                    message: 'User profile not loaded',
+                    color: 'red',
+                  });
+                  return;
+                }
                 try {
-                  const conversation = await api.getOrCreateConversation(profileUser.id);
+                  console.log('Creating conversation with user:', profileUser.id);
+                  await api.getOrCreateConversation(profileUser.id);
                   navigate(`/messages?userId=${profileUser.id}`);
                 } catch (error) {
                   console.error('Failed to start conversation:', error);
+                  notifications.show({
+                    title: 'Error',
+                    message: error?.message || 'Failed to start conversation',
+                    color: 'red',
+                  });
                 }
               }}
               style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }}

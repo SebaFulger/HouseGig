@@ -1,30 +1,36 @@
 import { supabase } from '../config/supabaseClient.js';
 
 export const getUserProfileService = async (username) => {
-  // Get user from profiles table first
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('username', username)
-    .single();
-  
-  if (profileError || !profile) {
-    throw { statusCode: 404, message: 'User not found' };
+  try {
+    // Get user from profiles table first
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('username', username)
+      .maybeSingle();
+    
+    if (profileError) {
+      console.error('Profile fetch error:', profileError);
+      throw { statusCode: 500, message: 'Failed to fetch profile' };
+    }
+    
+    if (!profile) {
+      throw { statusCode: 404, message: 'User not found' };
+    }
+    
+    // Return profile data directly - no need to fetch from auth.users
+    return {
+      id: profile.id,
+      username: profile.username,
+      email: profile.email || null,
+      avatar_url: profile.avatar_url || null,
+      bio: profile.bio || null,
+      created_at: profile.created_at
+    };
+  } catch (error) {
+    console.error('Error in getUserProfileService:', error);
+    throw error;
   }
-  
-  // Get additional data from auth.users
-  const { data: { user }, error: authError } = await supabase.auth.admin.getUserById(profile.id);
-  
-  if (authError) throw { statusCode: 500, message: 'Failed to fetch user data' };
-  
-  return {
-    id: profile.id,
-    username: profile.username,
-    email: user?.email || null,
-    avatar_url: profile.avatar_url || user?.user_metadata?.avatar_url || null,
-    bio: profile.bio || user?.user_metadata?.bio || null,
-    created_at: profile.created_at
-  };
 };
 
 export const updateUserProfileService = async (userId, updateData) => {

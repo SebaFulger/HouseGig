@@ -12,6 +12,7 @@ import { IconDots, IconEdit, IconTrash, IconArrowUp, IconArrowDown } from '@tabl
 
 function ListingDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { isAuthenticated, requireAuth, user } = useAuth();
 
   const [listing, setListing] = React.useState(null);
@@ -33,10 +34,9 @@ function ListingDetails() {
   const [replyingTo, setReplyingTo] = React.useState(null);
   const [replyText, setReplyText] = React.useState('');
   const [replies, setReplies] = React.useState({});
-  const textareaRef = React.useRef(null);
-  const navigate = useNavigate();
   const [editingCommentId, setEditingCommentId] = React.useState(null);
   const [editCommentText, setEditCommentText] = React.useState('');
+  const textareaRef = React.useRef(null);
   const replyTextareaRef = React.useRef(null);
 
   // Fetch listing data
@@ -643,7 +643,15 @@ function ListingDetails() {
                     <div className="comment-content">
                       <div className="comment-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <span className="comment-author">{comment.user?.username || 'Anonymous'}</span>
+                          <Link 
+                            to={`/profile/${comment.user?.username}`} 
+                            className="comment-author"
+                            style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}
+                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                          >
+                            {comment.user?.username || 'Anonymous'}
+                          </Link>
                           <span className="comment-meta">
                             {new Date(comment.created_at).toLocaleDateString('en-US', { 
                               month: 'short', 
@@ -801,7 +809,15 @@ function ListingDetails() {
                               )}
                               <div className="comment-content">
                                 <div className="comment-header">
-                                  <span className="comment-author">{reply.user?.username || 'Anonymous'}</span>
+                                  <Link 
+                                    to={`/profile/${reply.user?.username}`} 
+                                    className="comment-author"
+                                    style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}
+                                    onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                                    onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                                  >
+                                    {reply.user?.username || 'Anonymous'}
+                                  </Link>
                                   <span className="comment-meta">
                                     {new Date(reply.created_at).toLocaleDateString('en-US', { 
                                       month: 'short', 
