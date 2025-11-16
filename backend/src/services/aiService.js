@@ -1,9 +1,7 @@
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize Gemini client
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // System prompt for the design assistant
 const SYSTEM_PROMPT = `You are an expert interior/exterior design and garden planning assistant for HouseGig, a platform where users share and discover home designs.
@@ -66,17 +64,37 @@ export const chat = async (messages, context = null) => {
 
     conversationMessages.push(...recentMessages);
 
-    // Call OpenAI API
-    const response = await openai.chat.completions.create({
-      model: process.env.AI_MODEL || 'gpt-4o-mini',
-      messages: conversationMessages,
-      temperature: 0.7,
-      max_tokens: 1000,
-      presence_penalty: 0.1,
-      frequency_penalty: 0.1,
-    });
+    // Build complete prompt for Gemini
+    // Gemini works better with a single prompt containing full context
+    let fullPrompt = SYSTEM_PROMPT + '\n\n';
+    
+    // Add context if available
+    if (context) {
+      const contextContent = buildContextMessage(context);
+      if (contextContent) {
+        fullPrompt += contextContent + '\n\n';
+      }
+    }
+    
+    // Add conversation history
+    for (const msg of recentMessages) {
+      if (msg.role === 'user') {
+        fullPrompt += `User: ${msg.content}\n\n`;
+      } else if (msg.role === 'assistant') {
+        fullPrompt += `Assistant: ${msg.content}\n\n`;
+      }
+    }
+    
+    fullPrompt += 'Assistant:';
 
-    const assistantMessage = response.choices?.[0]?.message?.content?.trim();
+    // Get model instance - use model name without prefix
+    const modelName = process.env.AI_MODEL || 'gemini-2.0-flash-exp';
+    const model = genAI.getGenerativeModel({ model: modelName });
+
+    // Generate response
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const assistantMessage = response.text()?.trim();
 
     if (!assistantMessage) {
       throw new Error('No response from AI');
@@ -86,16 +104,25 @@ export const chat = async (messages, context = null) => {
 
   } catch (error) {
     console.error('AI Service Error:', error);
+    console.error('Error details:', {
+      status: error.status,
+      code: error.code,
+      type: error.type,
+      message: error.message
+    });
 
-    // Handle specific OpenAI errors
-    if (error.status === 401) {
-      throw { statusCode: 500, message: 'AI service authentication failed' };
+    // Handle specific Gemini errors
+    if (error.status === 401 || error.message?.includes('API key')) {
+      throw { statusCode: 500, message: 'AI service authentication failed. Please check API key.' };
     }
-    if (error.status === 429) {
-      throw { statusCode: 429, message: 'AI service rate limit reached. Please try again in a moment.' };
+    if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('rate limit')) {
+      throw { statusCode: 429, message: 'Gemini rate limit reached (15 req/min on free tier). Try again in a moment.' };
     }
     if (error.status === 500 || error.status === 503) {
       throw { statusCode: 503, message: 'AI service temporarily unavailable. Please try again.' };
+    }
+    if (error.message?.includes('SAFETY')) {
+      throw { statusCode: 400, message: 'Content blocked by safety filters. Please rephrase your question.' };
     }
 
     // Generic error
