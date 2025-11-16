@@ -12,7 +12,7 @@
   overflow-x: auto;
   padding: 0.5rem 0;
   scrollbar-width: thin;
-  scrollbar-color: #1971c2 #e0e0e0;
+  scrollbar-color: rgba(31, 96, 3, 0.8) #e0e0e0;
   min-width: 0;
 }
 
@@ -20,7 +20,7 @@
   height: 8px;
 }
 .carousel::-webkit-scrollbar-thumb {
-  background: #1971c2;
+  background: rgba(31, 96, 3, 0.8);
   border-radius: 4px;
 }
 

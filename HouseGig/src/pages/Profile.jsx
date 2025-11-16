@@ -88,7 +88,7 @@ function Profile() {
   if (loading) {
     return (
       <main className="explore-main" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <Loader size="lg" />
+        <Loader size="lg" type="dots" color="rgba(31, 96, 3, 0.8)" />
       </main>
     );
   }

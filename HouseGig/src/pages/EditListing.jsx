@@ -120,7 +120,7 @@ function EditListing() {
     return (
       <main className="explore-main">
         <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
-          <Loader size="xl" />
+          <Loader size="xl" type="dots" color="rgba(31, 96, 3, 0.8)" />
         </div>
       </main>
     );

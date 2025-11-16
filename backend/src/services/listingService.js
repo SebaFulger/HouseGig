@@ -61,12 +61,9 @@ export const getAllListingsService = async (filters = {}) => {
   const { 
     search, 
     propertyType, 
-    world, 
     sortBy = 'created_at', 
     limit = 20, 
-    offset = 0,
-    rarity,
-    magicLevel
+    offset = 0
   } = filters;
 
   let query = supabase
@@ -75,13 +72,11 @@ export const getAllListingsService = async (filters = {}) => {
       id,
       title,
       description,
-      world,
       region,
       property_type,
-      price,
       main_image_url,
-      rarity,
-      magic_level,
+      gallery_image_urls,
+      tags,
       owner_id,
       upvotes,
       downvotes,
@@ -91,24 +86,12 @@ export const getAllListingsService = async (filters = {}) => {
 
   if (search) {
     query = query.or(
-      `title.ilike.%${search}%,world.ilike.%${search}%,region.ilike.%${search}%`
+      `title.ilike.%${search}%,region.ilike.%${search}%,description.ilike.%${search}%`
     );
   }
 
   if (propertyType) {
     query = query.eq('property_type', propertyType);
-  }
-
-  if (world) {
-    query = query.eq('world', world);
-  }
-
-  if (rarity) {
-    query = query.eq('rarity', rarity);
-  }
-
-  if (magicLevel) {
-    query = query.eq('magic_level', magicLevel);
   }
 
   // Sorting

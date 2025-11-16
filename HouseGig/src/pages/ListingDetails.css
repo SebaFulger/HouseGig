@@ -607,22 +607,28 @@ body.dark-mode .mantine-Checkbox-label {
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
-.similar-listing-meta {
+.similar-listing-owner-row {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
-.similar-listing-price {
-  color: var(--text);
-  font-weight: 600;
+.similar-listing-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
 }
 
 .similar-listing-owner {
-  color: var(--muted);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .similar-listing-stats {

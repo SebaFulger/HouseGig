@@ -176,7 +176,7 @@ function Messages() {
   if (loading) {
     return (
       <main className="explore-main" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <Loader size="lg" />
+        <Loader size="lg" type="dots" color="rgba(31, 96, 3, 0.8)" />
       </main>
     );
   }
@@ -196,7 +196,7 @@ function Messages() {
           }}
           style={{
             padding: '0.5rem 1rem',
-            backgroundColor: '#1971c2',
+            backgroundColor: 'rgba(31, 96, 3, 0.8)',
             color: '#fff',
             border: 'none',
             borderRadius: '8px',
@@ -299,7 +299,7 @@ function Messages() {
                           </span>
                           {conv.unread_count > 0 && (
                             <span style={{
-                              backgroundColor: '#1971c2',
+                              backgroundColor: 'rgba(31, 96, 3, 0.8)',
                               color: '#fff',
                               borderRadius: '10px',
                               padding: '2px 8px',
@@ -441,7 +441,7 @@ function Messages() {
                           )}
                           <div>
                             <div style={{
-                              backgroundColor: isOwn ? '#1971c2' : 'var(--card-bg)',
+                              backgroundColor: isOwn ? 'rgba(31, 96, 3, 0.8)' : 'var(--card-bg)',
                               color: isOwn ? '#fff' : 'var(--text)',
                               padding: '0.75rem 1rem',
                               borderRadius: '12px',
@@ -509,7 +509,7 @@ function Messages() {
                     disabled={!messageText.trim() || sending}
                     style={{
                       padding: '0.75rem 1.5rem',
-                      backgroundColor: messageText.trim() && !sending ? '#1971c2' : 'var(--muted)',
+                      backgroundColor: messageText.trim() && !sending ? 'rgba(31, 96, 3, 0.8)' : 'var(--muted)',
                       color: '#fff',
                       border: 'none',
                       borderRadius: '8px',

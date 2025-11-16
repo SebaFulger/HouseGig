@@ -4,6 +4,7 @@
   max-width: 100%;
   box-sizing: border-box;
   background-color: var(--bg);
+  min-height: calc(100vh - 80px);
 }
 
 body.dark-mode .explore-main {
