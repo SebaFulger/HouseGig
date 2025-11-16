@@ -1,5 +1,5 @@
 .explore-main {
-  padding: 2rem 3rem 6rem 3rem;
+  padding: 2rem 3rem 0rem 3rem;
   margin-top: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -114,13 +114,13 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .explore-main {
-    padding: 0 1.5rem 6rem 1.5rem;
+    padding: 0 1.5rem 0rem 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .explore-main {
-    padding: 0 1rem 6rem 1rem;
+    padding: 0 1rem 0rem 1rem;
   }
   
   .explore-title {
