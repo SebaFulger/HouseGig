@@ -540,7 +540,7 @@ function ListingDetails() {
               <button 
                 className="action-btn-with-count" 
                 onClick={handleUpvote} 
-                style={{ color: voteStatus === 'upvote' ? '#51cf66' : 'inherit' }}
+                style={{ color: voteStatus === 'upvote' ? 'rgba(31, 96, 3, 0.8)' : 'inherit' }}
               >
                 <IconArrowUp size={28} stroke={1.5} />
                 <span className="action-count">{upvotes}</span>
@@ -548,7 +548,7 @@ function ListingDetails() {
               <button 
                 className="action-btn-with-count" 
                 onClick={handleDownvote} 
-                style={{ color: voteStatus === 'downvote' ? '#ff6b6b' : 'inherit' }}
+                style={{ color: voteStatus === 'downvote' ? 'rgba(31, 96, 3, 0.8)' : 'inherit' }}
               >
                 <IconArrowDown size={28} stroke={1.5} />
                 <span className="action-count">{downvotes}</span>

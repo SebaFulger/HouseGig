@@ -9,6 +9,7 @@ router.get('/', authenticate, collectionController.getUserCollections);
 // Return all of the current user's collections with a boolean indicating
 // whether a given listing is in each collection
 router.get('/for-listing/:listingId', authenticate, collectionController.getUserCollectionsForListing);
+router.get('/user/:username', optional, collectionController.getPublicCollectionsByUsername);
 // Allow public access, but include user context if provided to authorize private access for owners
 router.get('/:id', optional, collectionController.getCollection);
 router.put('/:id', authenticate, collectionController.updateCollection);

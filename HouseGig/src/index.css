@@ -35,10 +35,22 @@ a:hover {
   color: rgba(31, 96, 3, 0.8);
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
 }
 
 h1 {

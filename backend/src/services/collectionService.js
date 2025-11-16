@@ -122,6 +122,70 @@ export const getUserCollectionsService = async (userId) => {
   }));
 };
 
+export const getPublicCollectionsByUsernameService = async (username) => {
+  // First, get the user ID from the profiles table using the username
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('username', username)
+    .single();
+
+  if (profileError || !profile) {
+    throw { statusCode: 404, message: 'User not found' };
+  }
+
+  // Fetch only public collections for this user
+  const { data: cols, error } = await supabase
+    .from('collections')
+    .select('*')
+    .eq('owner_id', profile.id)
+    .eq('is_public', true)
+    .order('created_at', { ascending: false });
+
+  if (error) throw { statusCode: 400, message: error.message };
+
+  if (!cols || cols.length === 0) return [];
+
+  // Fetch counts and first 4 listing images for these collections
+  const ids = cols.map(c => c.id);
+  const { data: links } = await supabase
+    .from('collection_listings')
+    .select('collection_id, listing_id')
+    .in('collection_id', ids);
+
+  const counts = new Map();
+  const listingIdsByCollection = new Map();
+  
+  (links || []).forEach(l => {
+    counts.set(l.collection_id, (counts.get(l.collection_id) || 0) + 1);
+    if (!listingIdsByCollection.has(l.collection_id)) {
+      listingIdsByCollection.set(l.collection_id, []);
+    }
+    if (listingIdsByCollection.get(l.collection_id).length < 4) {
+      listingIdsByCollection.get(l.collection_id).push(l.listing_id);
+    }
+  });
+
+  // Fetch main_image_url for those listings
+  const allListingIds = [...new Set([...listingIdsByCollection.values()].flat())];
+  let imageMap = new Map();
+  
+  if (allListingIds.length > 0) {
+    const { data: listings } = await supabase
+      .from('listings')
+      .select('id, main_image_url')
+      .in('id', allListingIds);
+    
+    (listings || []).forEach(l => imageMap.set(l.id, l.main_image_url));
+  }
+
+  return cols.map(c => ({
+    ...c,
+    listing_count: counts.get(c.id) || 0,
+    cover_images: (listingIdsByCollection.get(c.id) || []).map(lid => imageMap.get(lid)).filter(Boolean)
+  }));
+};
+
 export const getUserCollectionsForListingService = async (userId, listingId) => {
   // Get the user's collections
   const { data: collections, error } = await supabase

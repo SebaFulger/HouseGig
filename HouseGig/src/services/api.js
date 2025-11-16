@@ -106,6 +106,10 @@ class ApiClient {
     return this.request('/listings/my-listings');
   }
 
+  async getUserListings(username) {
+    return this.request(`/listings/user/${username}`);
+  }
+
   // Votes
   async upvoteListing(listingId) {
     return this.request('/votes/upvote', {
@@ -186,6 +190,10 @@ class ApiClient {
   // Collections
   async getCollections() {
     return this.request('/collections');
+  }
+
+  async getUserCollections(username) {
+    return this.request(`/collections/user/${username}`);
   }
 
   async getCollection(id) {

@@ -81,3 +81,15 @@ export const getUserListings = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getListingsByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = parseInt(req.query.offset) || 0;
+    const listings = await listingService.getListingsByUsernameService(username, limit, offset);
+    res.json(listings);
+  } catch (error) {
+    next(error);
+  }
+};

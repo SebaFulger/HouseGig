@@ -29,6 +29,16 @@ export const getUserCollections = async (req, res, next) => {
   }
 };
 
+export const getPublicCollectionsByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const collections = await collectionService.getPublicCollectionsByUsernameService(username);
+    res.json(collections);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUserCollectionsForListing = async (req, res, next) => {
   try {
     const { listingId } = req.params;

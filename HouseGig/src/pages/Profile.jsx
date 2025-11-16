@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Paper, Text, Title, Avatar, Button, Tabs, Loader } from '@mantine/core';
 import { IconSettings, IconMessage } from '@tabler/icons-react';
 import ListingCard from '../components/ListingCard';
+import CollectionCover from '../components/CollectionCover';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useState, useEffect } from 'react';
@@ -18,6 +19,7 @@ function Profile() {
 
   const [profileUser, setProfileUser] = useState(user);
   const [userListings, setUserListings] = useState([]);
+  const [userCollections, setUserCollections] = useState([]);
   const [upvotedListings, setUpvotedListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,9 +41,21 @@ function Profile() {
           const listings = await api.getMyListings();
           setUserListings(listings);
           
+          // Fetch collections
+          const collections = await api.getCollections();
+          setUserCollections(collections);
+          
           // Fetch upvoted listings
           const upvoted = await api.getMyUpvotedListings();
           setUpvotedListings(upvoted);
+        } else if (username) {
+          // Fetch other user's listings
+          const listings = await api.getUserListings(username);
+          setUserListings(listings);
+          
+          // Fetch public collections
+          const collections = await api.getUserCollections(username);
+          setUserCollections(collections);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -82,6 +96,7 @@ function Profile() {
             <Text c="dimmed" size="sm">{profileUser?.bio || 'No bio available'}</Text>
             <div style={{ display: 'flex', gap: '2rem', marginTop: '0.5rem' }}>
               <Text size="sm"><strong>{userListings.length}</strong> Listings</Text>
+              <Text size="sm"><strong>{userCollections.length}</strong> Collections</Text>
             </div>
           </div>
           {isOwnProfile ? (
@@ -131,9 +146,19 @@ function Profile() {
         </Tabs.Panel>
 
         <Tabs.Panel value="collections" pt="xl">
-          <Paper shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
-            <Text c="dimmed">No collections yet</Text>
-          </Paper>
+          {userCollections.length === 0 ? (
+            <Paper shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
+              <Text c="dimmed">No public collections yet</Text>
+            </Paper>
+          ) : (
+            <div className="listing-grid-responsive">
+              {userCollections.map(collection => (
+                <Link key={collection.id} to={`/collection/${collection.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <CollectionCover collection={collection} />
+                </Link>
+              ))}
+            </div>
+          )}
         </Tabs.Panel>
 
         {isOwnProfile && (
