@@ -10,6 +10,7 @@ import collectionRoutes from './routes/collectionRoutes.js';
 import voteRoutes from './routes/voteRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/collections', collectionRoutes);
 app.use('/api/votes', voteRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
