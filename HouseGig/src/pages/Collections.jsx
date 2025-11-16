@@ -84,8 +84,8 @@ function Collections() {
   }
 
   return (
-    <main className="explore-main">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4.2rem', marginBottom: '3.5rem' }}>
+    <main className="explore-main" style={{ paddingTop: modalOpen ? '6rem' : undefined }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3.5rem' }}>
         <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1.2, margin: 0 }}>My Collections</h2>
         <Button leftSection={<IconPlus size={18} />} style={{ backgroundColor: 'rgba(31, 96, 3, 0.8)' }} onClick={() => setModalOpen(true)}>
           New Collection
@@ -120,7 +120,14 @@ function Collections() {
         </div>
       )}
 
-      <Modal opened={modalOpen} onClose={() => setModalOpen(false)} title="Create New Collection">
+      <Modal 
+        opened={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        title="Create New Collection"
+        centered={false}
+        yOffset={150}
+        zIndex={2000}
+      >
         <TextInput
           label="Collection Name"
           placeholder="My Favorite Castles"
