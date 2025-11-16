@@ -102,7 +102,7 @@ function ListingDetails() {
   if (loading) {
     return (
       <main className="explore-main" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <Loader size="lg" />
+        <Loader size="lg" type="dots" color="rgba(31, 96, 3, 0.8)" />
       </main>
     );
   }
@@ -562,13 +562,13 @@ function ListingDetails() {
                 </svg>
                 <span className="action-count">{comments.length}</span>
               </button>
-              <button className="action-btn-with-count" onClick={handleSave} style={{ color: saved ? '#1971c2' : 'inherit' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={saved ? '#1971c2' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <button className="action-btn-with-count" onClick={handleSave} style={{ color: saved ? 'rgba(31, 96, 3, 0.8)' : 'inherit' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill={saved ? 'rgba(31, 96, 3, 0.8)' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
               </button>
               {saved && (
-                <span style={{ marginLeft: '8px', fontSize: '0.9rem', color: '#1971c2' }}>Saved</span>
+                <span style={{ marginLeft: '8px', fontSize: '0.9rem', color: 'rgba(31, 96, 3, 0.8)' }}>Saved</span>
               )}
               <button className="action-btn-with-count" onClick={handleShare}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

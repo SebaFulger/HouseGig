@@ -39,7 +39,7 @@ html, body {
   margin: 0 !important;
   padding: 0 !important;
   min-width: 320px;
-  height: auto;
+  height: 100%;
   overflow-x: hidden;
   background-color: var(--bg);
   color: var(--text);
@@ -214,11 +214,23 @@ body.dark-mode [class*="dimmed"] {
 
 /* Loader color override to green */
 .mantine-Loader-root {
-  color: rgba(31, 96, 3, 1) !important;
+  color: rgba(31, 96, 3, 0.8) !important;
+}
+
+.mantine-Loader-root svg {
+  color: rgba(31, 96, 3, 0.8) !important;
+  stroke: rgba(31, 96, 3, 0.8) !important;
+  fill: rgba(31, 96, 3, 0.8) !important;
 }
 
 body.dark-mode .mantine-Loader-root {
-  color: rgba(31, 96, 3, 1) !important;
+  color: rgba(31, 96, 3, 0.8) !important;
+}
+
+body.dark-mode .mantine-Loader-root svg {
+  color: rgba(31, 96, 3, 0.8) !important;
+  stroke: rgba(31, 96, 3, 0.8) !important;
+  fill: rgba(31, 96, 3, 0.8) !important;
 }
 
 body.dark-mode .mantine-Menu-dropdown {
